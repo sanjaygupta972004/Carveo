@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"log"
@@ -16,7 +16,6 @@ type Config struct {
 	DbName     string
 	JwtSecret  string
 	SSLMode    string
-	TimeZone   string
 	Port       string
 }
 
@@ -26,8 +25,7 @@ func LoadConfig() (Config, error) {
 	if env == "" {
 		env = "dev"
 	}
-	envPath := filepath.Join(env + ".env")
-	log.Println("absolute path ", envPath)
+	envPath := filepath.Join("..", "config", "env", env+".env")
 	err := godotenv.Load(envPath)
 	if err != nil {
 		log.Fatalf("Error coming while loading env file : %v", err)
@@ -40,13 +38,12 @@ func LoadConfig() (Config, error) {
 		DbPort:     os.Getenv("DB_PORT"),
 		DbPassword: os.Getenv("DB_PASSWORD"),
 		DbName:     os.Getenv("DB_NAME"),
-		JwtSecret:  os.Getenv("JWT_SECRET"),
 		SSLMode:    os.Getenv("DB_SSLMODE"),
-		TimeZone:   os.Getenv("DB_TIMEZONE"),
+		JwtSecret:  os.Getenv("JWT_SECRET"),
 		Port:       os.Getenv("PORT"),
 	}
 
-	if config.DbHost == "" && config.DbName == "" && config.DbPassword == "" && config.DbUser == "" && config.DbPort == "" && config.Port == "" && config.SSLMode == "" && config.TimeZone == "" {
+	if config.DbHost == "" && config.DbName == "" && config.DbPassword == "" && config.DbUser == "" && config.DbPort == "" {
 		log.Fatalf("Essential credential not found from env files")
 		return Config{}, err
 	}

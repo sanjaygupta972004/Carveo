@@ -1,6 +1,7 @@
 package main
 
 import (
+	"carveo/config"
 	"carveo/db"
 	"fmt"
 	"log"
@@ -9,11 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var config Config
+var cnfg config.Config
 
 func init() {
-	var err error
-	config, err = LoadConfig()
+	var err error = nil
+	cnfg, err = config.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -25,15 +26,13 @@ func main() {
 	var err error = nil
 
 	// initialized DB
-
 	dbCon := &db.DBConfig{
-		DbUser:     config.DbUser,
-		DbHost:     config.DbHost,
-		DbPort:     config.DbPort,
-		DbPassword: config.DbPassword,
-		DbName:     config.DbName,
-		SSLMode:    config.SSLMode,
-		TimeZone:   config.TimeZone,
+		DbUser:     cnfg.DbUser,
+		DbHost:     cnfg.DbHost,
+		DbPort:     cnfg.DbPort,
+		DbPassword: cnfg.DbPassword,
+		DbName:     cnfg.DbName,
+		SSLMode:    cnfg.SSLMode,
 	}
 
 	err = db.ConnectDB(dbCon)
@@ -48,10 +47,11 @@ func main() {
 	router := gin.New()
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": fmt.Sprintf("Welcome to Carveo, Server is run on port : %s", config.Port),
+			"message": fmt.Sprintf("Welcome to Carveo, Server is running on port : %s", cnfg.Port),
 		})
 	})
-	if err := router.Run(":%s", config.Port); err != nil {
+	log.Printf("Server is starting on port : %s", cnfg.Port)
+	if err := router.Run(fmt.Sprintf(":%s", cnfg.Port)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 

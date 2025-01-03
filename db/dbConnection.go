@@ -3,14 +3,15 @@ package db
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"time"
+
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/jackc/pgx/v5/stdlib"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
-	"log"
-	"time"
 )
 
 var (
@@ -25,57 +26,74 @@ type DBConfig struct {
 	DbPassword string
 	DbName     string
 	SSLMode    string
-	TimeZone   string
 }
 
-func ConnectDB(cfg *DBConfig) error {
-
-	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=%s timezone=%s", cfg.DbUser, cfg.DbPassword, cfg.DbName, cfg.DbHost, cfg.DbPort, cfg.SSLMode, cfg.TimeZone)
-
-	poolConfig, err := pgxpool.ParseConfig(dsn)
+func connectPGX(cfg *DBConfig) *pgxpool.Pool {
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName, cfg.SSLMode,
+	)
+	PGXPool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
-		log.Fatalf("Unable to perse pgx config ; %v", err)
-		return err
+		log.Printf("Unable to connect to pgx database : %v\n", err)
+		os.Exit(1)
+
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
-
-	PGXPool, err := pgxpool.NewWithConfig(ctx, poolConfig)
+	var greeting string
+	err = PGXPool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
 	if err != nil {
-		log.Fatalf("Unable to initialize pgx pool ; %v", err)
-		return err
+		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
+		os.Exit(1)
 	}
+	return PGXPool
+}
 
-	err = PGXPool.Ping(ctx)
-	if err != nil {
-		log.Fatalf("Unable to connect to database with pgx: %v", err)
-	}
-
-	log.Println("Successfully connected to postgres with pgx :", PGXPool)
-
-	sqlDB := stdlib.OpenDB(*PGXPool.Config().ConnConfig)
-	defer sqlDB.Close()
-
+func connectGORMDB(cfg *DBConfig) *gorm.DB {
+	dsn := fmt.Sprintf(
+		"postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		cfg.DbUser, cfg.DbPassword, cfg.DbHost, cfg.DbPort, cfg.DbName, cfg.SSLMode,
+	)
 	gormConfig := &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
 	}
-
-	DB, err = gorm.Open(postgres.New(postgres.Config{
-		Conn: sqlDB,
+	DB, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
 	}), gormConfig)
 	if err != nil {
-		log.Fatalf("Failed to initialize GORM: %v", err)
+		log.Printf("Unable to open gorm DB :%v", err)
+		os.Exit(1)
+	}
+
+	return DB
+}
+
+func ConnectDB(cfg *DBConfig) error {
+	// initialized pgx native postgres driver
+	PGXPool := connectPGX(cfg)
+	defer PGXPool.Close()
+
+	if err := PGXPool.Ping(context.Background()); err != nil {
+		log.Fatal("pgx connection failed:", err)
 		return err
 	}
+
+	// connected gorm db
+	gormDB := connectGORMDB(cfg)
+	sqlDB, err := gormDB.DB()
+	if err != nil {
+		log.Printf("Unable to open sqlDB from gorm :%v", err)
+		return err
+	}
+
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	log.Println("Successfully connected to postgres with gorm ")
+	log.Println("Successfully connected to postgres with gorm and pgx")
+
 	return nil
 }
 
@@ -83,16 +101,18 @@ func DisConnectDB() error {
 	if DB != nil {
 		sqlDB, err := DB.DB()
 		if err != nil {
-			log.Fatalf("failed to get sqlDB form gorm DB :%v", err)
+			log.Fatalf("Error fetching SQL DB from GORM: %v", err)
 			return err
 		}
+
 		err = sqlDB.Close()
 		if err != nil {
-			log.Fatalf("error closing database :%v", err)
+			log.Fatalf("Error closing SQL DB connection: %v", err)
 			return err
 		}
-		log.Println("Database connection closed successfully")
 
+		log.Println("Database connection closed successfully")
 	}
+
 	return nil
 }
