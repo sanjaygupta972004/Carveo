@@ -59,7 +59,7 @@ func connectGORMDB(cfg *DBConfig) *gorm.DB {
 			SingularTable: true,
 		},
 	}
-	DB, err := gorm.Open(postgres.New(postgres.Config{
+	gormDB, err := gorm.Open(postgres.New(postgres.Config{
 		DSN: dsn,
 	}), gormConfig)
 	if err != nil {
@@ -67,7 +67,7 @@ func connectGORMDB(cfg *DBConfig) *gorm.DB {
 		os.Exit(1)
 	}
 
-	return DB
+	return gormDB
 }
 
 func ConnectDB(cfg *DBConfig) error {
@@ -88,6 +88,12 @@ func ConnectDB(cfg *DBConfig) error {
 		return err
 	}
 
+	if sqlDB.Ping() == nil {
+		DB = gormDB
+	} else {
+		log.Fatalf("Error connecting to database: %v", err)
+		return err
+	}
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)

@@ -3,6 +3,7 @@ package main
 import (
 	"carveo/config"
 	"carveo/db"
+	"carveo/db/migration"
 	"fmt"
 	"log"
 	"net/http"
@@ -40,9 +41,12 @@ func main() {
 		log.Fatalf("Failed to connect postgres db : %v", err)
 	}
 	defer db.DisConnectDB()
+	db := db.DB
+	// Migrate models
+	if err := migration.MigrateModels(db); err != nil {
+		log.Fatalf("Failed to migrate models: %v", err)
 
-	// db := db.DB
-
+	}
 	// initialized gin server
 	router := gin.New()
 	router.GET("/", func(c *gin.Context) {
