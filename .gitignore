@@ -1,0 +1,41 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Build output files
+*.out
+*.test
+
+# Env files (for local development; don't commit sensitive credentials)
+*.env
+*.cmd.env
+*.dev.env
+*.prod.env
+*.test.env
+
+# IDE-specific files (adjust for your editor)
+.vscode/
+.idea/
+*.iml
+
+# Go module files (if using a vendor directory, uncomment below)
+vendor/
+
+# Temporary files and logs
+*.log
+*.tmp
+
+# Generated files (e.g., mocks, swagger docs)
+*.gen.go
+*.mock.go
+
+# Coverage files
+*.cover
+*.cov
+
+# OS-specific files̀
+.DS_Store
+Thumbs.db
