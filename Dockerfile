@@ -25,7 +25,7 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -o carveoApp ./cmd
 RUN chmod +x /app/carveoApp
 
-# This is the final image
+# This is the final image\
 FROM alpine:3.10
 
 RUN mkdir /app
