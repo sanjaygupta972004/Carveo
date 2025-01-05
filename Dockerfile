@@ -2,14 +2,13 @@
 FROM golang:1.23.3-alpine as builder
 
 # Set environment variables
-ENV APP_ENV=dev
-ENV DB_USER=avnadmin
-ENV DB_HOST=pg-1db5e002-sanjaygupta07054-136d.g.aivencloud.com
-ENV DB_PORT=16033
-ENV DB_PASSWORD=enterpassword
-ENV DB_NAME=defaultdb
-ENV DB_SSLMODE=require
-ENV PORT=8090
+ENV DB_USER=${DB_USER}
+ENV DB_HOST=${DB_HOST}
+ENV DB_PORT=${DB_PORT}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_NAME=${DB_NAME}
+ENV DB_SSLMODE=${DB_SSLMODE}
+ENV PORT=${PORT}
 
 RUN mkdir /app
 
