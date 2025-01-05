@@ -39,3 +39,7 @@ vendor/
 # OS-specific files̀
 .DS_Store
 Thumbs.db
+
+// 
+
+*.Dockerfile
