@@ -1,7 +1,7 @@
 package config
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -19,17 +19,21 @@ type Config struct {
 	Port       string
 }
 
-func LoadConfig() (Config, error) {
+func LoadEnvFile(env string) error {
+	envPath := filepath.Join("env", env+".env")
+	fmt.Println("Loading environment file: ", envPath)
+	return godotenv.Load(envPath)
+}
 
+func LoadConfig() (Config, error) {
 	env := os.Getenv("APP_ENV")
 	if env == "" {
 		env = "dev"
 	}
-	envPath := filepath.Join("..", "config", "env", env+".env")
-	err := godotenv.Load(envPath)
+
+	err := LoadEnvFile(env)
 	if err != nil {
-		log.Fatalf("Error coming while loading env file : %v", err)
-		return Config{}, err
+		return Config{}, fmt.Errorf("failed to load environment file: %w", err)
 	}
 
 	config := Config{
@@ -43,9 +47,21 @@ func LoadConfig() (Config, error) {
 		Port:       os.Getenv("PORT"),
 	}
 
-	if config.DbHost == "" && config.DbName == "" && config.DbPassword == "" && config.DbUser == "" && config.DbPort == "" {
-		log.Fatalf("Essential credential not found from env files")
-		return Config{}, err
+	requiredFields := map[string]string{
+		"DB_USER":     config.DbUser,
+		"DB_HOST":     config.DbHost,
+		"DB_PORT":     config.DbPort,
+		"DB_PASSWORD": config.DbPassword,
+		"DB_NAME":     config.DbName,
+		"JWT_SECRET":  config.JwtSecret,
+		"PORT":        config.Port,
 	}
+
+	for key, value := range requiredFields {
+		if value == "" {
+			return Config{}, fmt.Errorf("missing required environment variable: %s", key)
+		}
+	}
+
 	return config, nil
 }

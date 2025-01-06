@@ -11,6 +11,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8090:8090"
+    volumes:
+      - ./cmd/env:/app/cmd/env
     restart: always
     deploy:
       mode: replicated
