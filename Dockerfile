@@ -1,4 +1,3 @@
-# this is base image for build the app
 FROM golang:1.23.3-alpine AS builder
 
 RUN mkdir /app
