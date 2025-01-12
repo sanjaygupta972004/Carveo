@@ -1,6 +1,7 @@
 package main
 
 import (
+	"carveo/api/routers"
 	"carveo/config"
 	"carveo/db"
 	"carveo/db/migration"
@@ -54,6 +55,8 @@ func main() {
 			"message": fmt.Sprintf("Welcome to Carveo, Server is running on port : %s", cnfg.Port),
 		})
 	})
+	// setup routers
+	routers.SetupRouter(router, db)
 	log.Printf("Server is starting on port : %s", cnfg.Port)
 	if err := router.Run(fmt.Sprintf(":%s", cnfg.Port)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
