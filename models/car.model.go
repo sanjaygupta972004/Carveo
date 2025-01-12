@@ -20,6 +20,7 @@ type Car struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 
 	// Relationship
+	Engine *Engine `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;foreignKey:CarID;reference:CarID" `
 }
 
 func (c *Car) BeforeCreate(tx *gorm.DB) (err error) {

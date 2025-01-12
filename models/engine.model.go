@@ -12,8 +12,9 @@ type Engine struct {
 	Displacement  float64   `gorm:"type:decimal(10,2);not null" json:"displacement"`
 	NoOfCylinders int       `gorm:"type:int;not null" json:"noOfCylinders"`
 	CarRange      string    `gorm:"type:varchar(255);not null" json:"carRange"`
-
 	// Relationship
+
+	CarID uuid.UUID `gorm:"type:uuid;not null;index" json:"carID"`
 }
 
 func (e *Engine) BeforeCreate(tx *gorm.DB) error {
