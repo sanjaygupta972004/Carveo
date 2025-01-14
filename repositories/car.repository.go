@@ -53,6 +53,9 @@ func (r *carRepository) CreateCar(car models.Car) (models.Car, error) {
 		return models.Car{}, err
 	}
 
+	if err := r.db.Where("car_id = ?", car.CarID).Find(&car).Error; err != nil {
+		return models.Car{}, err
+	}
 	err := r.db.Create(&car).Error
 	return car, err
 }
