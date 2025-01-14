@@ -1,14 +1,18 @@
 package routers
 
 import (
+	"carveo/api/controllers"
+	"carveo/repositories"
+	"carveo/services"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 func SetupEngineRouter(rg *gin.RouterGroup, db *gorm.DB) {
-	// engineRepository := repositories.NewEngineRepository(db)
-	// engineService := services.NewEngineService(engineRepository)
-	// engineHandler := controllers.NewEngineController(engineService)
+	engineRepository := repositories.NewEngineRepository(db)
+	engineService := services.NewEngineService(engineRepository)
+	engineHandler := controllers.NewEngineController(engineService)
 
 	router := rg.Group("/engines")
 
