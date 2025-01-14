@@ -1,6 +1,7 @@
 package main
 
 import (
+	"carveo/api/middlewares"
 	"carveo/api/routers"
 	"carveo/config"
 	"carveo/db"
@@ -55,6 +56,8 @@ func main() {
 			"message": fmt.Sprintf("Welcome to Carveo, Server is running on port : %s", cnfg.Port),
 		})
 	})
+	// global middleware
+	router.Use(middlewares.RecoverMiddleware())
 	// setup routers
 	routers.SetupRouter(router, db)
 	log.Printf("Server is starting on port : %s", cnfg.Port)

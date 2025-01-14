@@ -3,6 +3,15 @@ package controllers
 import "carveo/services"
 
 type CarController interface {
+	CreateCar()
+	GetAllCars()
+	GetCarByID()
+	GetCarByBrand()
+	UpdataCar()
+	DeleteCar()
+}
+
+type carRequest struct {
 }
 
 type carController struct {
