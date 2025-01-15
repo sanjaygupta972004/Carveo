@@ -12,7 +12,7 @@ import (
 type EngineService interface {
 	GetAllEngines() ([]models.Engine, error)
 	GetEngineById(id string) (models.Engine, error)
-	CreateEngine(engine models.Engine) (models.Engine, error)
+	CreateEngine(engine models.Engine, carID string) (models.Engine, error)
 	UpdateEngine(id string, engine models.Engine) (models.Engine, error)
 	DeleteEngine(id string) error
 }
@@ -39,7 +39,14 @@ func (s *engineService) GetEngineById(id string) (models.Engine, error) {
 	return s.engineRepo.GetEngineByID(idUUID)
 }
 
-func (s *engineService) CreateEngine(engine models.Engine) (models.Engine, error) {
+func (s *engineService) CreateEngine(engine models.Engine, carID string) (models.Engine, error) {
+	idUUID, err := utils.IsUUID(carID)
+	if err != nil {
+		return models.Engine{}, err
+	}
+	if idUUID == uuid.Nil {
+		engine.CarID = idUUID
+	}
 	if engine.CarID == uuid.Nil {
 		return models.Engine{}, errors.New("CarID is required")
 

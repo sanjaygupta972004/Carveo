@@ -22,5 +22,11 @@ func SetupEngineRouter(rg *gin.RouterGroup, db *gorm.DB) {
 				"message": "Hello from engine router",
 			})
 		})
+
+		router.GET("/getAllEngine", engineHandler.GetEngines)
+		router.GET("/:getAllEngineByID", engineHandler.GetEngine)
+		router.POST("/createEngine", engineHandler.CreateEngine)
+		router.PUT("/updateEngine/:engineID", engineHandler.UpdateEngine)
+		router.DELETE("/deleteEngine/:engineID", engineHandler.DeleteEngine)
 	}
 }

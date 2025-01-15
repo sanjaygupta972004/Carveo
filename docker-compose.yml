@@ -12,7 +12,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - ./cmd/env:/app/cmd/env
+      - ./env:/app/env
     restart: always
     deploy:
       mode: replicated
