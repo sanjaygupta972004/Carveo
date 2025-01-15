@@ -23,6 +23,13 @@ func SetupCarRouter(rg *gin.RouterGroup, db *gorm.DB) {
 			})
 		},
 		)
+
+		router.POST("/createCar", carHandler.CreateCar)
+		router.GET("/getAllCars", carHandler.GetAllCars)
+		router.GET("/getCarByID/:carID", carHandler.GetCarByID)
+		router.GET("/getCarByBrand/:brandName/:isEngine", carHandler.GetCarByBrand)
+		router.PUT("/updateCar/:carID", carHandler.UpdateCar)
+		router.DELETE("/deleteCar/:carID", carHandler.DeleteCar)
 	}
 
 }

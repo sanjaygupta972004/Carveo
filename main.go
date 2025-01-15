@@ -57,6 +57,7 @@ func main() {
 		})
 	})
 	// global middleware
+	router.Use(middlewares.CorsMiddleWare())
 	router.Use(middlewares.RecoverMiddleware())
 	// setup routers
 	routers.SetupRouter(router, db)
