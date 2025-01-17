@@ -2,7 +2,7 @@ package models
 
 import (
 	"carveo/validations"
-
+	"fmt"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,10 @@ type Engine struct {
 
 func (e *Engine) BeforeCreate(tx *gorm.DB) error {
 	e.EngineID = uuid.Must(uuid.NewV4())
-	return validations.ValidateEngine(
+
+	fmt.Println("Engine in model: ", e)
+
+	err := validations.ValidateEngine(
 		validations.Engine{
 			Displacement:  e.Displacement,
 			NoOfCylinders: e.NoOfCylinders,
@@ -27,6 +30,10 @@ func (e *Engine) BeforeCreate(tx *gorm.DB) error {
 			EngineID:      e.EngineID,
 		},
 	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (e *Engine) TableName() string {

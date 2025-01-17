@@ -28,7 +28,7 @@ func NewCarRepository(db *gorm.DB) CarRepository {
 
 func (r *carRepository) GetCarByID(id uuid.UUID) (models.Car, error) {
 	var car models.Car
-	if err := r.db.Preload("engine").First(&car, id).Error; err != nil {
+	if err := r.db.Preload("Engine").First(&car, id).Error; err != nil {
 		return models.Car{}, err
 	}
 	return car, nil

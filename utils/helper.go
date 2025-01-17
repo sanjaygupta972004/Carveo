@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +26,12 @@ func ErrorResponse(ctx *gin.Context, statusCode int, customMessage string, detai
 	if details != nil {
 		log.Printf("Error : %v", details)
 	}
+	fmt.Println("Error in helper function : ", details)
+	errorDetails := fmt.Sprintf("%v", details)
 	ctx.JSON(statusCode, gin.H{
 		"success": false,
 		"message": customMessage,
-		"error":   details,
+		"error":   errorDetails,
 	})
 }
 
@@ -38,4 +41,5 @@ func SuccessResponse(ctx *gin.Context, statusCode int, customMessage string, dat
 		"message": customMessage,
 		"data":    data,
 	})
+
 }

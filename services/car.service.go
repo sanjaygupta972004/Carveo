@@ -32,8 +32,8 @@ func (s *carService) CreateCar(car models.Car) (models.Car, error) {
 	if car.CarID != uuid.Nil {
 		return models.Car{}, errors.New("engine_id should not be provided")
 	}
-
 	data, err := s.carRepo.CreateCar(car)
+
 	if err != nil {
 		return models.Car{}, err
 	}
@@ -64,7 +64,7 @@ func (s *carService) GetAllCars() ([]models.Car, error) {
 
 func (s *carService) GetCarByBrand(brand string, isEngine bool) (models.Car, error) {
 	if brand == "" {
-		err := errors.New("Brand name is required to access car by brandName")
+		err := errors.New("brand name is required to access car by brandName")
 		return models.Car{}, err
 	}
 	data, err := s.carRepo.GetCarByBrand(brand, isEngine)

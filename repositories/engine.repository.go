@@ -33,18 +33,22 @@ func (r *engineRepository) CreateEngine(engine models.Engine) (models.Engine, er
 	}
 
 	var car models.Car
-	if err := r.db.Where("car_id = ?", newEngine.CarID).First(&car).Error; err != nil {
+	if err := r.db.Where("car_id = ?", engine.CarID).First(&car).Error; err != nil {
 		return models.Engine{}, err
 	}
 
-	if newEngine.CarID != car.CarID {
+	if engine.CarID != car.CarID {
 		return models.Engine{}, fmt.Errorf("car with ID %s not found", newEngine.CarID)
 	}
 
-	if err := r.db.Create(&newEngine).Error; err != nil {
+	if err := r.db.Where("car_id = ?", engine.CarID).First(&newEngine).Error; err == nil {
+		return models.Engine{}, fmt.Errorf("engine for car with ID %s already exists", newEngine.CarID)
+	}
+
+	if err := r.db.Create(&engine).Error; err != nil {
 		return models.Engine{}, err
 	}
-	return newEngine, nil
+	return engine, nil
 }
 
 func (r *engineRepository) UpdateEngine(id uuid.UUID, engine models.Engine) (models.Engine, error) {

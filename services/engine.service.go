@@ -45,11 +45,11 @@ func (s *engineService) CreateEngine(engine models.Engine, carID string) (models
 		return models.Engine{}, err
 	}
 	if idUUID == uuid.Nil {
-		engine.CarID = idUUID
+		return models.Engine{}, errors.New("Car ID is required")
 	}
-	if engine.CarID == uuid.Nil {
-		return models.Engine{}, errors.New("CarID is required")
 
+	if idUUID != uuid.Nil {
+		engine.CarID = idUUID
 	}
 	return s.engineRepo.CreateEngine(engine)
 }
