@@ -65,6 +65,7 @@ func (ec *engineController) GetEngines(c *gin.Context) {
 	engineData, err := ec.engineService.GetAllEngines()
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
 	utils.SuccessResponse(c, http.StatusOK, "Engines retrieved successfully", engineData)
 }
@@ -73,14 +74,17 @@ func (ec *engineController) UpdateEngine(c *gin.Context) {
 	var engineRequest models.Engine
 	if err := c.ShouldBindJSON(&engineRequest); err != nil {
 		utils.ErrorResponse(c, http.StatusBadRequest, err.Error(), err)
+		return
 	}
 	engineID := c.Param("engineID")
 	if engineID == "" {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Engine ID is required", nil)
+		return
 	}
 	engine, err := ec.engineService.UpdateEngine(engineID, engineRequest)
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
 	utils.SuccessResponse(c, http.StatusOK, "Engine updated successfully", engine)
 }
@@ -89,10 +93,12 @@ func (ec *engineController) DeleteEngine(c *gin.Context) {
 	engineID := c.Param("engineID")
 	if engineID == "" {
 		utils.ErrorResponse(c, http.StatusBadRequest, "Engine ID is required", nil)
+		return
 	}
 	err := ec.engineService.DeleteEngine(engineID)
 	if err != nil {
 		utils.ErrorResponse(c, http.StatusInternalServerError, err.Error(), err)
+		return
 	}
 	utils.SuccessResponse(c, http.StatusOK, "Engine deleted successfully", nil)
 }
