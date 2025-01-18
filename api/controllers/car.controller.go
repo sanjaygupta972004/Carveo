@@ -29,9 +29,9 @@ func NewCarController(carService services.CarService) CarController {
 	}
 }
 
-type carParameter struct {
-	brandName string `uri:"brandName" binding:"required"`
-	isEngine  bool   `uri:"isEngine" binding:"required"`
+type CarParameter struct {
+	BrandName string `uri:"brandName" binding:"required"`
+	IsEngine  *bool  `uri:"isEngine" binding:"required"`
 }
 
 func (cc *carController) CreateCar(ctx *gin.Context) {
@@ -60,13 +60,16 @@ func (cc *carController) GetAllCars(ctx *gin.Context) {
 }
 
 func (cc *carController) GetCarByBrand(ctx *gin.Context) {
-	var carUriParameter carParameter
-	if err := ctx.ShouldBindUri(&ctx); err != nil {
+	var carParameter CarParameter
+	if err := ctx.ShouldBindUri(&carParameter); err != nil {
 		utils.ErrorResponse(ctx, http.StatusBadRequest, "All uri parameter required", err)
 		return
 	}
-
-	data, err := cc.carService.GetCarByBrand(carUriParameter.brandName, carUriParameter.isEngine)
+	if carParameter.IsEngine == nil {
+		utils.ErrorResponse(ctx, http.StatusBadRequest, "isEngine flag should be required", nil)
+		return
+	}
+	data, err := cc.carService.GetCarByBrand(carParameter.BrandName, *carParameter.IsEngine)
 	if err != nil {
 		utils.ErrorResponse(ctx, http.StatusNotFound, utils.ErrNotFound, err)
 		return

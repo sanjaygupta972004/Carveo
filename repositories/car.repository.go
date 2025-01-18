@@ -45,7 +45,7 @@ func (r *carRepository) GetAllCars() ([]models.Car, error) {
 func (r *carRepository) GetCarByBrand(brand string, isEngine bool) (models.Car, error) {
 	var car models.Car
 	if isEngine {
-		if err := r.db.Preload("engine").Where("brand = ?", brand).First(&car).Error; err != nil {
+		if err := r.db.Preload("Engine").Where("brand = ?", brand).First(&car).Error; err != nil {
 			return models.Car{}, err
 		}
 		return car, nil
