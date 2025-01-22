@@ -6,12 +6,32 @@ import (
 	"carveo/config"
 	"carveo/db"
 	"carveo/db/migration"
-	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title		Carevo Car Management API Documentation
+// @version		1.0.0
+// @description	API documentation for Carevo, a car management system for tracking, servicing, and managing vehicles.
+// @termsOfService	https://carveo.com/terms
+
+// @host		localhost:8090
+// @BasePath	/api/v1
+
+// @contact.name		Support Team
+// @contact.url		https://carveo.com/support
+// @contact.email		support@carveo.com
+
+// @securityDefinitions.apikey	      CarveoAPIKey
+// @in						header
+// @name						Authorization
+// @description				JWT token required to access endpoints. Add the token in the "Authorization" header in the format: Bearer <JWT_TOKEN>.
+
+// @tag.name		Car Management
+// @tag.description	Endpoints related to car operations.
 
 var cnfg config.Config
 
@@ -37,12 +57,12 @@ func main() {
 		DbName:     cnfg.DbName,
 		SSLMode:    cnfg.SSLMode,
 	}
-
 	err = db.ConnectDB(dbCon)
 	if err != nil {
 		log.Fatalf("Failed to connect postgres db : %v", err)
 	}
 	defer db.DisConnectDB()
+
 	db := db.DB
 	// Migrate models
 	if err := migration.MigrateModels(db); err != nil {
@@ -51,19 +71,22 @@ func main() {
 	}
 	// initialized gin server
 	router := gin.New()
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": fmt.Sprintf("Welcome to Carveo, Server is running on port : %s", cnfg.Port),
-		})
-	})
 	// global middleware
 	router.Use(middlewares.CorsMiddleWare())
 	router.Use(middlewares.RecoverMiddleware())
 	// setup routers
 	routers.SetupRouter(router, db)
-	log.Printf("Server is starting on port : %s", cnfg.Port)
-	if err := router.Run(fmt.Sprintf(":%s", cnfg.Port)); err != nil {
-		log.Fatalf("Failed to start server: %v", err)
-	}
+	// swagger handler for gin
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// setup default router
+	routers.SetupDefaultRouter(router, cnfg.Port)
+
+	log.Println("Swagger handler initialized...")
+	log.Println("Starting Gin server on port:", cnfg.Port)
+
+	// setup health check router
+	routers.SetupHealthCheckRouter(router)
+	// run server
+	router.Run(":" + cnfg.Port)
 
 }
