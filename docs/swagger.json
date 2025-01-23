@@ -7,11 +7,11 @@
         "contact": {
             "name": "Support Team",
             "url": "https://carveo.com/support",
-            "email": "support@carveo.com"
+            "email": "sanjaygupta07054@gmailcom"
         },
         "version": "1.0.0"
     },
-    "host": "localhost:8090",
+    "host": "http://localhost:8090",
     "basePath": "/api/v1",
     "paths": {
         "/health": {

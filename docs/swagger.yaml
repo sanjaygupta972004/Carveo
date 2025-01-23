@@ -1,8 +1,8 @@
 basePath: /api/v1
-host: localhost:8090
+host: http://localhost:8090
 info:
   contact:
-    email: support@carveo.com
+    email: sanjaygupta07054@gmailcom
     name: Support Team
     url: https://carveo.com/support
   description: API documentation for Carevo, a car management system for tracking,

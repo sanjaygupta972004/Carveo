@@ -13,7 +13,7 @@ const docTemplate = `{
         "contact": {
             "name": "Support Team",
             "url": "https://carveo.com/support",
-            "email": "support@carveo.com"
+            "email": "sanjaygupta07054@gmailcom"
         },
         "version": "{{.Version}}"
     },
@@ -61,7 +61,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "localhost:8090",
+	Host:             "http://localhost:8090",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Carevo Car Management API Documentation",
