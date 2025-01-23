@@ -1,4 +1,19 @@
 basePath: /api/v1
+definitions:
+  routers.HealthCheckResponse:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data: {}
+      error: {}
+      message:
+        example: Server is running and healthy
+        type: string
+      status:
+        example: healthy
+        type: string
+    type: object
 host: http://localhost:8090
 info:
   contact:
@@ -13,18 +28,18 @@ info:
 paths:
   /health:
     get:
-      description: Check if the server is running and healthy.
+      description: Provides a simple health check to verify the server's operational
+        status
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
-      summary: Health Check
+            $ref: '#/definitions/routers.HealthCheckResponse'
+      summary: Health Check Endpoint
       tags:
-      - Health Check
+      - Health
 securityDefinitions:
   CarveoAPIKey:
     description: 'JWT token required to access endpoints. Add the token in the "Authorization"
