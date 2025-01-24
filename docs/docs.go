@@ -20,6 +20,220 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/createCar": {
+            "post": {
+                "description": "Create a new car with the input payload. This endpoint allows you to add a car to the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Create a new car",
+                "parameters": [
+                    {
+                        "description": "Car Request",
+                        "name": "car",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CarSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Car created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseCarSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/deleteCar/{carID}": {
+            "delete": {
+                "description": "Delete a car with the input payload. This endpoint allows you to delete a car in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Delete a car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the car to delete",
+                        "name": "carID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Car deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/getAllCars": {
+            "get": {
+                "description": "Retrieve all cars from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Get all cars",
+                "responses": {
+                    "200": {
+                        "description": "All cars retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.SuccessResponseCarSwagger"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No cars found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/getCarByBrand/{brandName}/{isEngine}": {
+            "get": {
+                "description": "Retrieve car by brand name and engine type from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Get car by brand name and engine type",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Brand name of the car to retrieve",
+                        "name": "brandName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Engine type of the car",
+                        "name": "isEngine",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Car retrieved successfully by only brand name without engine type",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseCarSwagger"
+                        }
+                    },
+                    "404": {
+                        "description": "No car found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/getCarByID/{carID}": {
+            "get": {
+                "description": "Retrieve car by ID from the database",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Get car by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the car to retrieve",
+                        "name": "carID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Car retrieved successfully by ID",
+                        "schema": {
+                            "$ref": "#/definitions/models.CarResponseByGetByID"
+                        }
+                    },
+                    "404": {
+                        "description": "No car found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Provides a simple health check to verify the server's operational status",
@@ -39,9 +253,241 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/updateCar/{carID}": {
+            "patch": {
+                "description": "Update a car with the input payload. This endpoint allows you to update a car in the database.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Car"
+                ],
+                "summary": "Update a car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID of the car to update",
+                        "name": "carID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Car Request",
+                        "name": "car",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.CarSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Car updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseCarSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "models.CarResponseByGetByBrandIsEngine": {
+            "type": "object",
+            "properties": {
+                "car": {
+                    "$ref": "#/definitions/models.CarSwagger"
+                },
+                "engine": {
+                    "type": "object",
+                    "properties": {
+                        "carID": {
+                            "type": "string",
+                            "example": "a123c456-78de-90fg-1234-h567ijkl8901"
+                        },
+                        "carRange": {
+                            "type": "string",
+                            "example": "300-400 miles"
+                        },
+                        "displacement": {
+                            "type": "number",
+                            "example": 3.5
+                        },
+                        "engineID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        },
+                        "noOfCylinders": {
+                            "type": "integer",
+                            "example": 6
+                        }
+                    }
+                }
+            }
+        },
+        "models.CarResponseByGetByID": {
+            "type": "object",
+            "properties": {
+                "car": {
+                    "$ref": "#/definitions/models.SuccessResponseCarSwagger"
+                },
+                "engine": {
+                    "type": "object",
+                    "properties": {
+                        "carID": {
+                            "type": "string",
+                            "example": "a123c456-78de-90fg-1234-h567ijkl8901"
+                        },
+                        "carRange": {
+                            "type": "string",
+                            "example": "300-400 miles"
+                        },
+                        "displacement": {
+                            "type": "number",
+                            "example": 3.5
+                        },
+                        "engineID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        },
+                        "noOfCylinders": {
+                            "type": "integer",
+                            "example": 6
+                        }
+                    }
+                }
+            }
+        },
+        "models.CarSwagger": {
+            "description": "Represents the details of a car",
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "string",
+                    "example": "Tesla"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2025-01-01T12:00:00Z"
+                },
+                "fuelType": {
+                    "type": "string",
+                    "example": "Electric"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Tesla Model S"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 79999.99
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2025-01-01T12:00:00Z"
+                },
+                "year": {
+                    "type": "string",
+                    "example": "2022"
+                }
+            }
+        },
+        "models.ErrorResponseCarSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 400
+                },
+                "error": {
+                    "type": "string",
+                    "example": "Detailed error message"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Error message"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error"
+                }
+            }
+        },
+        "models.SuccessResponseCarSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "brand": {
+                            "type": "string",
+                            "example": "Tesla"
+                        },
+                        "createdAt": {
+                            "type": "string",
+                            "example": "2025-01-01T12:00:00Z"
+                        },
+                        "fuelType": {
+                            "type": "string",
+                            "example": "Electric"
+                        },
+                        "id": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Tesla Model S"
+                        },
+                        "price": {
+                            "type": "number",
+                            "example": 79999.99
+                        },
+                        "updatedAt": {
+                            "type": "string",
+                            "example": "2025-01-01T12:00:00Z"
+                        },
+                        "year": {
+                            "type": "string",
+                            "example": "2022"
+                        }
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Success message"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
         "routers.HealthCheckResponse": {
             "type": "object",
             "properties": {

@@ -34,6 +34,16 @@ type CarParameter struct {
 	IsEngine  *bool  `uri:"isEngine" binding:"required"`
 }
 
+// @Summary Create a new car
+// @Description Create a new car with the input payload. This endpoint allows you to add a car to the database.
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param car body models.CarSwagger true "Car Request"
+// @Success 201 {object} models.SuccessResponseCarSwagger "Car created successfully"
+// @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
+// @Router /createCar [post]
 func (cc *carController) CreateCar(ctx *gin.Context) {
 	var carRequest models.Car
 	if err := ctx.ShouldBindJSON(&carRequest); err != nil {
@@ -49,6 +59,14 @@ func (cc *carController) CreateCar(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, http.StatusCreated, "Car successfully created", data)
 }
 
+// @Summary Get all cars
+// @Description Retrieve all cars from the database
+// @Tags Car
+// @Produce json
+// @Success 200 {object} []models.SuccessResponseCarSwagger "All cars retrieved successfully"
+// @Failure 404 {object} models.ErrorResponseCarSwagger "No cars found"
+// @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
+// @Router /getAllCars [get]
 func (cc *carController) GetAllCars(ctx *gin.Context) {
 	data, err := cc.carService.GetAllCars()
 	if err != nil {
@@ -59,6 +77,17 @@ func (cc *carController) GetAllCars(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, http.StatusOK, "All cars retrieved successfully", data)
 }
 
+// @Summary Get car by brand name and engine type
+// @Description Retrieve car by brand name and engine type from the database
+// @Tags Car
+// @Produce json
+// @Param brandName path string true "Brand name of the car to retrieve"
+// @Param isEngine path boolean true "Engine type of the car"
+// @Success 200 {object} models.CarResponseByGetByBrandIsEngine "Car retrieved successfully by brand name and engine type"
+// @success 200 {object} models.SuccessResponseCarSwagger "Car retrieved successfully by only brand name without engine type"
+// @Failure 404 {object} models.ErrorResponseCarSwagger "No car found"
+// @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
+// @Router /getCarByBrand/{brandName}/{isEngine} [get]
 func (cc *carController) GetCarByBrand(ctx *gin.Context) {
 	var carParameter CarParameter
 	if err := ctx.ShouldBindUri(&carParameter); err != nil {
@@ -77,6 +106,15 @@ func (cc *carController) GetCarByBrand(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, http.StatusOK, "Retrieved data by brand name", data)
 }
 
+// @Summary Get car by ID
+// @Description Retrieve car by ID from the database
+// @Tags Car
+// @Produce json
+// @Param carID path string true "ID of the car to retrieve"
+// @Success 200 {object} models.CarResponseByGetByID "Car retrieved successfully by ID"
+// @Failure 404 {object} models.ErrorResponseCarSwagger "No car found"
+// @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
+// @Router /getCarByID/{carID} [get]
 func (cc *carController) GetCarByID(ctx *gin.Context) {
 	var uri struct {
 		ID string `uri:"carID" binding:"required"`
@@ -97,6 +135,17 @@ func (cc *carController) GetCarByID(ctx *gin.Context) {
 
 }
 
+// @Summary Update a car
+// @Description Update a car with the input payload. This endpoint allows you to update a car in the database.
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param carID path string true "ID of the car to update"
+// @Param car body models.CarSwagger true "Car Request"
+// @Success 200 {object} models.SuccessResponseCarSwagger "Car updated successfully"
+// @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
+// @Router /updateCar/{carID} [patch]
 func (cc *carController) UpdateCar(ctx *gin.Context) {
 	var carRequest models.Car
 	if err := ctx.ShouldBindJSON(&carRequest); err != nil {
@@ -120,6 +169,16 @@ func (cc *carController) UpdateCar(ctx *gin.Context) {
 	utils.SuccessResponse(ctx, http.StatusOK, "Car successfully updated", data)
 }
 
+// @Summary Delete a car
+// @Description Delete a car with the input payload. This endpoint allows you to delete a car in the database.
+// @Tags Car
+// @Accept json
+// @Produce json
+// @Param carID path string true "ID of the car to delete"
+// @Success 200 {string} string "Car deleted successfully"
+// @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseCarSwagger "Internal server error"
+// @Router /deleteCar/{carID} [delete]
 func (cc *carController) DeleteCar(ctx *gin.Context) {
 	var uri struct {
 		ID string `uri:"carID" binding:"required"`

@@ -1,5 +1,133 @@
 basePath: /api/v1
 definitions:
+  models.CarResponseByGetByBrandIsEngine:
+    properties:
+      car:
+        $ref: '#/definitions/models.CarSwagger'
+      engine:
+        properties:
+          carID:
+            example: a123c456-78de-90fg-1234-h567ijkl8901
+            type: string
+          carRange:
+            example: 300-400 miles
+            type: string
+          displacement:
+            example: 3.5
+            type: number
+          engineID:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+            type: string
+          noOfCylinders:
+            example: 6
+            type: integer
+        type: object
+    type: object
+  models.CarResponseByGetByID:
+    properties:
+      car:
+        $ref: '#/definitions/models.SuccessResponseCarSwagger'
+      engine:
+        properties:
+          carID:
+            example: a123c456-78de-90fg-1234-h567ijkl8901
+            type: string
+          carRange:
+            example: 300-400 miles
+            type: string
+          displacement:
+            example: 3.5
+            type: number
+          engineID:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+            type: string
+          noOfCylinders:
+            example: 6
+            type: integer
+        type: object
+    type: object
+  models.CarSwagger:
+    description: Represents the details of a car
+    properties:
+      brand:
+        example: Tesla
+        type: string
+      createdAt:
+        example: "2025-01-01T12:00:00Z"
+        type: string
+      fuelType:
+        example: Electric
+        type: string
+      id:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
+      name:
+        example: Tesla Model S
+        type: string
+      price:
+        example: 79999.99
+        type: number
+      updatedAt:
+        example: "2025-01-01T12:00:00Z"
+        type: string
+      year:
+        example: "2022"
+        type: string
+    type: object
+  models.ErrorResponseCarSwagger:
+    properties:
+      code:
+        example: 400
+        type: integer
+      error:
+        example: Detailed error message
+        type: string
+      message:
+        example: Error message
+        type: string
+      status:
+        example: error
+        type: string
+    type: object
+  models.SuccessResponseCarSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        properties:
+          brand:
+            example: Tesla
+            type: string
+          createdAt:
+            example: "2025-01-01T12:00:00Z"
+            type: string
+          fuelType:
+            example: Electric
+            type: string
+          id:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+            type: string
+          name:
+            example: Tesla Model S
+            type: string
+          price:
+            example: 79999.99
+            type: number
+          updatedAt:
+            example: "2025-01-01T12:00:00Z"
+            type: string
+          year:
+            example: "2022"
+            type: string
+        type: object
+      message:
+        example: Success message
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   routers.HealthCheckResponse:
     properties:
       code:
@@ -26,6 +154,150 @@ info:
   title: Carevo Car Management API Documentation
   version: 1.0.0
 paths:
+  /createCar:
+    post:
+      consumes:
+      - application/json
+      description: Create a new car with the input payload. This endpoint allows you
+        to add a car to the database.
+      parameters:
+      - description: Car Request
+        in: body
+        name: car
+        required: true
+        schema:
+          $ref: '#/definitions/models.CarSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Car created successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseCarSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Create a new car
+      tags:
+      - Car
+  /deleteCar/{carID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a car with the input payload. This endpoint allows you to
+        delete a car in the database.
+      parameters:
+      - description: ID of the car to delete
+        in: path
+        name: carID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car deleted successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Delete a car
+      tags:
+      - Car
+  /getAllCars:
+    get:
+      description: Retrieve all cars from the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All cars retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/models.SuccessResponseCarSwagger'
+            type: array
+        "404":
+          description: No cars found
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Get all cars
+      tags:
+      - Car
+  /getCarByBrand/{brandName}/{isEngine}:
+    get:
+      description: Retrieve car by brand name and engine type from the database
+      parameters:
+      - description: Brand name of the car to retrieve
+        in: path
+        name: brandName
+        required: true
+        type: string
+      - description: Engine type of the car
+        in: path
+        name: isEngine
+        required: true
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car retrieved successfully by only brand name without engine
+            type
+          schema:
+            $ref: '#/definitions/models.SuccessResponseCarSwagger'
+        "404":
+          description: No car found
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Get car by brand name and engine type
+      tags:
+      - Car
+  /getCarByID/{carID}:
+    get:
+      description: Retrieve car by ID from the database
+      parameters:
+      - description: ID of the car to retrieve
+        in: path
+        name: carID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car retrieved successfully by ID
+          schema:
+            $ref: '#/definitions/models.CarResponseByGetByID'
+        "404":
+          description: No car found
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Get car by ID
+      tags:
+      - Car
   /health:
     get:
       description: Provides a simple health check to verify the server's operational
@@ -40,6 +312,42 @@ paths:
       summary: Health Check Endpoint
       tags:
       - Health
+  /updateCar/{carID}:
+    patch:
+      consumes:
+      - application/json
+      description: Update a car with the input payload. This endpoint allows you to
+        update a car in the database.
+      parameters:
+      - description: ID of the car to update
+        in: path
+        name: carID
+        required: true
+        type: string
+      - description: Car Request
+        in: body
+        name: car
+        required: true
+        schema:
+          $ref: '#/definitions/models.CarSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Car updated successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseCarSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      summary: Update a car
+      tags:
+      - Car
 securityDefinitions:
   CarveoAPIKey:
     description: 'JWT token required to access endpoints. Add the token in the "Authorization"
