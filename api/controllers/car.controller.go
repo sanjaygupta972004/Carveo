@@ -43,7 +43,7 @@ type CarParameter struct {
 // @Success 201 {object} models.SuccessResponseCarSwagger "Car created successfully"
 // @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
-// @Router /createCar [post]
+// @Router /cars/createCar [post]
 func (cc *carController) CreateCar(ctx *gin.Context) {
 	var carRequest models.Car
 	if err := ctx.ShouldBindJSON(&carRequest); err != nil {
@@ -66,7 +66,7 @@ func (cc *carController) CreateCar(ctx *gin.Context) {
 // @Success 200 {object} []models.SuccessResponseCarSwagger "All cars retrieved successfully"
 // @Failure 404 {object} models.ErrorResponseCarSwagger "No cars found"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
-// @Router /getAllCars [get]
+// @Router /cars/getAllCars [get]
 func (cc *carController) GetAllCars(ctx *gin.Context) {
 	data, err := cc.carService.GetAllCars()
 	if err != nil {
@@ -87,7 +87,7 @@ func (cc *carController) GetAllCars(ctx *gin.Context) {
 // @success 200 {object} models.SuccessResponseCarSwagger "Car retrieved successfully by only brand name without engine type"
 // @Failure 404 {object} models.ErrorResponseCarSwagger "No car found"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
-// @Router /getCarByBrand/{brandName}/{isEngine} [get]
+// @Router /cars/getCarByBrand/{brandName}/{isEngine} [get]
 func (cc *carController) GetCarByBrand(ctx *gin.Context) {
 	var carParameter CarParameter
 	if err := ctx.ShouldBindUri(&carParameter); err != nil {
@@ -114,7 +114,7 @@ func (cc *carController) GetCarByBrand(ctx *gin.Context) {
 // @Success 200 {object} models.CarResponseByGetByID "Car retrieved successfully by ID"
 // @Failure 404 {object} models.ErrorResponseCarSwagger "No car found"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
-// @Router /getCarByID/{carID} [get]
+// @Router /cars/getCarByID/{carID} [get]
 func (cc *carController) GetCarByID(ctx *gin.Context) {
 	var uri struct {
 		ID string `uri:"carID" binding:"required"`
@@ -145,7 +145,7 @@ func (cc *carController) GetCarByID(ctx *gin.Context) {
 // @Success 200 {object} models.SuccessResponseCarSwagger "Car updated successfully"
 // @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
-// @Router /updateCar/{carID} [patch]
+// @Router /cars/updateCar/{carID} [patch]
 func (cc *carController) UpdateCar(ctx *gin.Context) {
 	var carRequest models.Car
 	if err := ctx.ShouldBindJSON(&carRequest); err != nil {
@@ -178,7 +178,7 @@ func (cc *carController) UpdateCar(ctx *gin.Context) {
 // @Success 200 {string} string "Car deleted successfully"
 // @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseCarSwagger "Internal server error"
-// @Router /deleteCar/{carID} [delete]
+// @Router /cars/deleteCar/{carID} [delete]
 func (cc *carController) DeleteCar(ctx *gin.Context) {
 	var uri struct {
 		ID string `uri:"carID" binding:"required"`

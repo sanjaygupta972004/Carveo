@@ -24,9 +24,9 @@ func SetupEngineRouter(rg *gin.RouterGroup, db *gorm.DB) {
 		})
 
 		router.GET("/getAllEngines", engineHandler.GetEngines)
-		router.GET("/:getAllEngineByID/:engineID", engineHandler.GetEngine)
+		router.GET("/:getEngineByID/:engineID", engineHandler.GetEngine)
 		router.POST("/createEngine/:carID", engineHandler.CreateEngine)
-		router.PUT("/updateEngine/:engineID", engineHandler.UpdateEngine)
+		router.PATCH("/updateEngine/:engineID", engineHandler.UpdateEngine)
 		router.DELETE("/deleteEngine/:engineID", engineHandler.DeleteEngine)
 	}
 }

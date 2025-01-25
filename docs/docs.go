@@ -20,7 +20,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/createCar": {
+        "/cars/createCar": {
             "post": {
                 "description": "Create a new car with the input payload. This endpoint allows you to add a car to the database.",
                 "consumes": [
@@ -66,7 +66,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/deleteCar/{carID}": {
+        "/cars/deleteCar/{carID}": {
             "delete": {
                 "description": "Delete a car with the input payload. This endpoint allows you to delete a car in the database.",
                 "consumes": [
@@ -110,7 +110,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/getAllCars": {
+        "/cars/getAllCars": {
             "get": {
                 "description": "Retrieve all cars from the database",
                 "produces": [
@@ -145,7 +145,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/getCarByBrand/{brandName}/{isEngine}": {
+        "/cars/getCarByBrand/{brandName}/{isEngine}": {
             "get": {
                 "description": "Retrieve car by brand name and engine type from the database",
                 "produces": [
@@ -193,7 +193,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/getCarByID/{carID}": {
+        "/cars/getCarByID/{carID}": {
             "get": {
                 "description": "Retrieve car by ID from the database",
                 "produces": [
@@ -234,27 +234,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/health": {
-            "get": {
-                "description": "Provides a simple health check to verify the server's operational status",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Health"
-                ],
-                "summary": "Health Check Endpoint",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/routers.HealthCheckResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/updateCar/{carID}": {
+        "/cars/updateCar/{carID}": {
             "patch": {
                 "description": "Update a car with the input payload. This endpoint allows you to update a car in the database.",
                 "consumes": [
@@ -302,6 +282,240 @@ const docTemplate = `{
                         "description": "Internal server error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponseCarSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/engiens/createEngine{carID}/": {
+            "post": {
+                "description": "Create Engine for a Car by Car ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Engine"
+                ],
+                "summary": "Create Engine for a Car",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Car ID",
+                        "name": "carID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Engine Request",
+                        "name": "engine",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.EngineSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Engine created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseEngineSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/engines/deleteEngine/{engineID}": {
+            "delete": {
+                "description": "Delete Engine by Engine ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Engine"
+                ],
+                "summary": "Delete Engine",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Engine ID",
+                        "name": "engineID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Engine deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/engines/getAllEngines": {
+            "get": {
+                "description": "Endpoint to get all engines",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Engine"
+                ],
+                "summary": "Get All Engines",
+                "responses": {
+                    "200": {
+                        "description": "All engines retrieved successfully",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.SuccessResponseEngineSwagger"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/engines/getEngineByID/{engineID}": {
+            "get": {
+                "description": "Get Engine by Engine ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Engine"
+                ],
+                "summary": "Get Engine by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Engine ID",
+                        "name": "engineID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Engine retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseEngineSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/engines/updateEngine/{engineID}": {
+            "patch": {
+                "description": "Update Engine by Engine ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Engine"
+                ],
+                "summary": "Update Engine",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Engine ID",
+                        "name": "engineID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Engine Request",
+                        "name": "engine",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.EngineSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Engine updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseEngineSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseEngineSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Provides a simple health check to verify the server's operational status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health Check Endpoint",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routers.HealthCheckResponse"
                         }
                     }
                 }
@@ -413,6 +627,32 @@ const docTemplate = `{
                 }
             }
         },
+        "models.EngineSwagger": {
+            "description": "Represents the details of a Enigne",
+            "type": "object",
+            "properties": {
+                "carID": {
+                    "type": "string",
+                    "example": "a123c456-78de-90fg-1234-h567ijkl8901"
+                },
+                "carRange": {
+                    "type": "string",
+                    "example": "300-400 miles"
+                },
+                "displacement": {
+                    "type": "number",
+                    "example": 3.5
+                },
+                "engineID": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                },
+                "noOfCylinders": {
+                    "type": "integer",
+                    "example": 6
+                }
+            }
+        },
         "models.ErrorResponseCarSwagger": {
             "type": "object",
             "properties": {
@@ -431,6 +671,27 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "example": "error"
+                }
+            }
+        },
+        "models.ErrorResponseEngineSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "error": {
+                    "type": "string",
+                    "example": "Error details"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Error message "
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error or failed to validation request data or server error"
                 }
             }
         },
@@ -481,6 +742,48 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Success message"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "models.SuccessResponseEngineSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "carID": {
+                            "type": "string",
+                            "example": "a123c456-78de-90fg-1234-h567ijkl8901"
+                        },
+                        "carRange": {
+                            "type": "string",
+                            "example": "300-400 miles"
+                        },
+                        "displacement": {
+                            "type": "number",
+                            "example": 3.5
+                        },
+                        "engineID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        },
+                        "noOfCylinders": {
+                            "type": "integer",
+                            "example": 6
+                        }
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Success message "
                 },
                 "status": {
                     "type": "string",

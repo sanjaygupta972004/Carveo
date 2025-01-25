@@ -74,6 +74,25 @@ definitions:
         example: "2022"
         type: string
     type: object
+  models.EngineSwagger:
+    description: Represents the details of a Enigne
+    properties:
+      carID:
+        example: a123c456-78de-90fg-1234-h567ijkl8901
+        type: string
+      carRange:
+        example: 300-400 miles
+        type: string
+      displacement:
+        example: 3.5
+        type: number
+      engineID:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
+      noOfCylinders:
+        example: 6
+        type: integer
+    type: object
   models.ErrorResponseCarSwagger:
     properties:
       code:
@@ -87,6 +106,21 @@ definitions:
         type: string
       status:
         example: error
+        type: string
+    type: object
+  models.ErrorResponseEngineSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      error:
+        example: Error details
+        type: string
+      message:
+        example: 'Error message '
+        type: string
+      status:
+        example: error or failed to validation request data or server error
         type: string
     type: object
   models.SuccessResponseCarSwagger:
@@ -128,6 +162,36 @@ definitions:
         example: success
         type: string
     type: object
+  models.SuccessResponseEngineSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        properties:
+          carID:
+            example: a123c456-78de-90fg-1234-h567ijkl8901
+            type: string
+          carRange:
+            example: 300-400 miles
+            type: string
+          displacement:
+            example: 3.5
+            type: number
+          engineID:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+            type: string
+          noOfCylinders:
+            example: 6
+            type: integer
+        type: object
+      message:
+        example: 'Success message '
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
   routers.HealthCheckResponse:
     properties:
       code:
@@ -154,7 +218,7 @@ info:
   title: Carevo Car Management API Documentation
   version: 1.0.0
 paths:
-  /createCar:
+  /cars/createCar:
     post:
       consumes:
       - application/json
@@ -185,7 +249,7 @@ paths:
       summary: Create a new car
       tags:
       - Car
-  /deleteCar/{carID}:
+  /cars/deleteCar/{carID}:
     delete:
       consumes:
       - application/json
@@ -215,7 +279,7 @@ paths:
       summary: Delete a car
       tags:
       - Car
-  /getAllCars:
+  /cars/getAllCars:
     get:
       description: Retrieve all cars from the database
       produces:
@@ -238,7 +302,7 @@ paths:
       summary: Get all cars
       tags:
       - Car
-  /getCarByBrand/{brandName}/{isEngine}:
+  /cars/getCarByBrand/{brandName}/{isEngine}:
     get:
       description: Retrieve car by brand name and engine type from the database
       parameters:
@@ -271,7 +335,7 @@ paths:
       summary: Get car by brand name and engine type
       tags:
       - Car
-  /getCarByID/{carID}:
+  /cars/getCarByID/{carID}:
     get:
       description: Retrieve car by ID from the database
       parameters:
@@ -298,21 +362,7 @@ paths:
       summary: Get car by ID
       tags:
       - Car
-  /health:
-    get:
-      description: Provides a simple health check to verify the server's operational
-        status
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/routers.HealthCheckResponse'
-      summary: Health Check Endpoint
-      tags:
-      - Health
-  /updateCar/{carID}:
+  /cars/updateCar/{carID}:
     patch:
       consumes:
       - application/json
@@ -348,6 +398,161 @@ paths:
       summary: Update a car
       tags:
       - Car
+  /engiens/createEngine{carID}/:
+    post:
+      consumes:
+      - application/json
+      description: Create Engine for a Car by Car ID
+      parameters:
+      - description: Car ID
+        in: path
+        name: carID
+        required: true
+        type: string
+      - description: Engine Request
+        in: body
+        name: engine
+        required: true
+        schema:
+          $ref: '#/definitions/models.EngineSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Engine created successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseEngineSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      summary: Create Engine for a Car
+      tags:
+      - Engine
+  /engines/deleteEngine/{engineID}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Engine by Engine ID
+      parameters:
+      - description: Engine ID
+        in: path
+        name: engineID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Engine deleted successfully
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      summary: Delete Engine
+      tags:
+      - Engine
+  /engines/getAllEngines:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint to get all engines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: All engines retrieved successfully
+          schema:
+            items:
+              $ref: '#/definitions/models.SuccessResponseEngineSwagger'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      summary: Get All Engines
+      tags:
+      - Engine
+  /engines/getEngineByID/{engineID}:
+    get:
+      consumes:
+      - application/json
+      description: Get Engine by Engine ID
+      parameters:
+      - description: Engine ID
+        in: path
+        name: engineID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Engine retrieved successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseEngineSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      summary: Get Engine by ID
+      tags:
+      - Engine
+  /engines/updateEngine/{engineID}:
+    patch:
+      consumes:
+      - application/json
+      description: Update Engine by Engine ID
+      parameters:
+      - description: Engine ID
+        in: path
+        name: engineID
+        required: true
+        type: string
+      - description: Engine Request
+        in: body
+        name: engine
+        required: true
+        schema:
+          $ref: '#/definitions/models.EngineSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Engine updated successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseEngineSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      summary: Update Engine
+      tags:
+      - Engine
+  /health:
+    get:
+      description: Provides a simple health check to verify the server's operational
+        status
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routers.HealthCheckResponse'
+      summary: Health Check Endpoint
+      tags:
+      - Health
 securityDefinitions:
   CarveoAPIKey:
     description: 'JWT token required to access endpoints. Add the token in the "Authorization"
