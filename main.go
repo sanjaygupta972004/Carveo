@@ -34,11 +34,11 @@ import (
 // @tag.name		Car Management
 // @tag.description	Endpoints related to car operations.
 
-var cnfg config.Config
+var ConfigApp config.Config
 
 func init() {
 	var err error = nil
-	cnfg, err = config.LoadConfig()
+	ConfigApp, err = config.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
@@ -51,12 +51,12 @@ func main() {
 
 	// initialized DB
 	dbCon := &db.DBConfig{
-		DbUser:     cnfg.DbUser,
-		DbHost:     cnfg.DbHost,
-		DbPort:     cnfg.DbPort,
-		DbPassword: cnfg.DbPassword,
-		DbName:     cnfg.DbName,
-		SSLMode:    cnfg.SSLMode,
+		DbUser:     ConfigApp.DbUser,
+		DbHost:     ConfigApp.DbHost,
+		DbPort:     ConfigApp.DbPort,
+		DbPassword: ConfigApp.DbPassword,
+		DbName:     ConfigApp.DbName,
+		SSLMode:    ConfigApp.SSLMode,
 	}
 	err = db.ConnectDB(dbCon)
 	if err != nil {
@@ -80,14 +80,14 @@ func main() {
 	// swagger handler for gin
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// setup default router
-	routers.SetupDefaultRouter(router, cnfg.Port)
+	routers.SetupDefaultRouter(router, ConfigApp.Port)
 
 	log.Println("Swagger handler initialized...")
-	log.Println("Starting Gin server on port:", cnfg.Port)
+	log.Println("Starting Gin server on port:", ConfigApp.Port)
 
 	// setup health check router
 	routers.SetupHealthCheckRouter(router)
 	// run server
-	router.Run(":" + cnfg.Port)
+	router.Run(":" + ConfigApp.Port)
 
 }
