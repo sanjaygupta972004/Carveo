@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func IsUUID(id string) (uuid.UUID, error) {
@@ -42,4 +43,18 @@ func SuccessResponse(ctx *gin.Context, statusCode int, customMessage string, dat
 		"data":    data,
 	})
 
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
+}
+
+func CompareHashAndPassword(hashedPassword, password string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	if err != nil {
+		fmt.Println("Error comparing password:", err)
+		return fmt.Errorf("invalid password")
+	}
+	return nil
 }

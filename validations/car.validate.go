@@ -27,22 +27,22 @@ func contains(fuels []string, item string) bool {
 func ValidateCar(car Car) error {
 	fuelType := []string{"Petrol", "Diesel", "Electric", "Hybrid"}
 	if car.Name == "" {
-		return errors.New("Name must not be empty")
+		return errors.New("name must not be empty")
 	}
 	if car.Year == "" {
-		return errors.New("Year must not be empty")
+		return errors.New("year must not be empty")
 	}
 	if car.Brand == "" {
-		return errors.New("Brand must not be empty")
+		return errors.New("brand must not be empty")
 	}
 	if car.CarID == uuid.Nil {
-		return errors.New("CarID must not be empty")
+		return errors.New("carID must not be empty")
 	}
 	if car.Price <= 0 {
-		return errors.New("Price must be greater than 0")
+		return errors.New("price must be greater than 0")
 	}
 	if !contains(fuelType, car.FuelType) {
-		return errors.New("Fuel type must be Petrol, Diesel, Electric, or Hybrid")
+		return errors.New("fuel type must be Petrol, Diesel, Electric, or Hybrid")
 	}
 
 	return nil
