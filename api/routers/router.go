@@ -38,6 +38,7 @@ func SetupRouter(router *gin.Engine, db *gorm.DB) {
 	{
 		SetupCarRouter(rg, db)
 		SetupEngineRouter(rg, db)
+		SetupUserRoutes(rg, db)
 	}
 
 }

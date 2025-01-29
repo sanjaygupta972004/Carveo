@@ -45,7 +45,7 @@ func loadENVForMailgun() (MailgunConfig, error) {
 
 	config := MailgunConfig{
 		Domain:        os.Getenv("MAILGUN_DOMAIN"),
-		PrivateAPIKey: os.Getenv("MAILGUN_PRIVATE_API_KEY"),
+		PrivateAPIKey: os.Getenv("MAILGUN_API_KEY"),
 		SenderEmail:   os.Getenv("MAILGUN_SENDER_EMAIL"),
 	}
 

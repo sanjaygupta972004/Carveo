@@ -21,6 +21,7 @@ func MigrateModels(db *gorm.DB) error {
 	}
 	err = db.AutoMigrate(
 		&models.Engine{},
+		&models.User{},
 	)
 	if err != nil {
 		panic("Failed to migrate tables: " + err.Error())

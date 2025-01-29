@@ -21,7 +21,8 @@ type Car struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 
 	// Relationship
-	Engine Engine `gorm:"foreignKey:CarID;references:CarID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	UserID uuid.UUID `gorm:"type:uuid;not null" json:"userID"`
+	Engine Engine    `gorm:"foreignKey:CarID;references:CarID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (c *Car) BeforeCreate(tx *gorm.DB) error {

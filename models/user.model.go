@@ -26,6 +26,8 @@ type User struct {
 	CreatedAt          time.Time      `gorm:"autoCreateTime"`
 	UpdatedAt          time.Time      `gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt `gorm:"index"`
+	// Relationships
+	Car []Car `gorm:"foreignKey:UserID; references:UserID; constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
