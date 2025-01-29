@@ -55,7 +55,9 @@ func (s *carService) DeleteCar(id string) error {
 }
 
 func (s *carService) GetAllCars() ([]models.Car, error) {
-	data, err := s.carRepo.GetAllCars()
+	var data []models.Car
+	var err error
+	data, err = s.carRepo.GetAllCars()
 	if err != nil {
 		return []models.Car{}, err
 	}
@@ -81,6 +83,9 @@ func (s *carService) GetCarByID(id string) (models.Car, error) {
 	}
 
 	data, err := s.carRepo.GetCarByID(idUUID)
+	if err != nil {
+		return models.Car{}, err
+	}
 
 	return data, nil
 

@@ -10,11 +10,17 @@ import (
 	"github.com/mailgun/mailgun-go/v4"
 )
 
-type MailgunService struct {
+type mailgunService struct {
 	config.MailgunConfig
 }
 
-func (mg *MailgunService) SendVerificationEmail(to string, token string, username string, verificationBaseUrl string) error {
+func NewMailgunService(cfg config.MailgunConfig) *mailgunService {
+	return &mailgunService{
+		MailgunConfig: cfg,
+	}
+}
+
+func (mg *mailgunService) SendVerificationEmail(to string, token string, username string, verificationBaseUrl string) error {
 	mgClient := mailgun.NewMailgun(mg.Domain, mg.PrivateAPIKey)
 	data := &utils.EmailDataType{}
 
@@ -37,7 +43,7 @@ func (mg *MailgunService) SendVerificationEmail(to string, token string, usernam
 	return err
 }
 
-func (mg *MailgunService) SendResetPasswordEmail(to string, token string, username string, verificationBaseUrl string) error {
+func (mg *mailgunService) SendResetPasswordEmail(to string, token string, username string, verificationBaseUrl string) error {
 	mgClient := mailgun.NewMailgun(mg.Domain, mg.PrivateAPIKey)
 	data := &utils.EmailDataType{}
 

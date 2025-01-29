@@ -3,7 +3,6 @@ package migration
 import (
 	"carveo/models"
 	"errors"
-
 	"gorm.io/gorm"
 )
 

@@ -1,12 +1,12 @@
 package models
 
 import (
-	"carveo/utils"
 	"carveo/validations"
 	"fmt"
 	"strings"
 	"time"
 
+	"carveo/utils"
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 )

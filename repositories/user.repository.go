@@ -9,10 +9,11 @@ import (
 
 type UserRepository interface {
 	CreateUser(user models.User) (models.User, error)
+	VarifyEmail(email string) error
 	LoginUser(email, password string) (models.User, error)
 	GetUserByID(id uuid.UUID) (models.User, error)
 	UpdateUser(id uuid.UUID, user models.User) (models.User, error)
-	DeleteUser(id uuid.UUID) error
+	DeleteUser(id uuid.UUID) (string, error)
 	GetAllUsers() ([]models.User, error)
 }
 
@@ -34,22 +35,68 @@ func (u *userRepository) CreateUser(user models.User) (models.User, error) {
 	return user, nil
 }
 
+func (u *userRepository) VarifyEmail(email string) error {
+	var user models.User
+	err := u.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return err
+	}
+	if user.Email == email {
+		if err := u.db.Model(&user).Where("email = ?", email).Updates(map[string]interface{}{
+			"is_email_verified": true,
+			"auth_token":        "",
+		}).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (u *userRepository) GetAllUsers() ([]models.User, error) {
-	panic("unimplemented")
+	var users []models.User
+	err := u.db.Find(&users).Error
+	if err != nil {
+		return []models.User{}, err
+	}
+	return users, nil
 }
 
 func (u *userRepository) GetUserByID(id uuid.UUID) (models.User, error) {
-	panic("unimplemented")
+	var user models.User
+	err := u.db.Where("user_id = ?", id).First(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }
 
 func (u *userRepository) LoginUser(email string, password string) (models.User, error) {
-	panic("unimplemented")
+	var user models.User
+	err := u.db.Where("email = ? AND pass_word = ?", email, password).First(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }
 
 func (u *userRepository) UpdateUser(id uuid.UUID, user models.User) (models.User, error) {
-	panic("unimplemented")
+	var updatedUser models.User
+	if err := u.db.Where("user_id = ?", id).First(&updatedUser).Error; err != nil {
+		return models.User{}, err
+	}
+
+	if err := u.db.Model(&updatedUser).Where("user_id = ?", id).Updates(user).Error; err != nil {
+		return models.User{}, err
+	}
+	return updatedUser, nil
 }
 
-func (u *userRepository) DeleteUser(id uuid.UUID) error {
-	panic("unimplemented")
+func (u *userRepository) DeleteUser(id uuid.UUID) (string, error) {
+	var user models.User
+	err := u.db.Delete(&user, id).Error
+
+	if err != nil {
+		return "Something went wrong while deleting user", err
+	}
+	return "User deleted successfully", nil
 }
