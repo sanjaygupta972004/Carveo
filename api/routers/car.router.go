@@ -2,6 +2,7 @@ package routers
 
 import (
 	"carveo/api/controllers"
+	"carveo/api/middlewares"
 	"carveo/repositories"
 	"carveo/services"
 
@@ -14,7 +15,9 @@ func SetupCarRouter(rg *gin.RouterGroup, db *gorm.DB) {
 	carService := services.NewCarService(carRepository)
 	carHandler := controllers.NewCarController(carService)
 
+	authMiddleware := middlewares.JWTVerifyForUser(db)
 	router := rg.Group("/cars")
+	router.Use(authMiddleware)
 
 	{
 		router.GET("/", func(c *gin.Context) {

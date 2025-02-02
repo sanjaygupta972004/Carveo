@@ -2,6 +2,7 @@ package routers
 
 import (
 	"carveo/api/controllers"
+	"carveo/api/middlewares"
 	"carveo/repositories"
 	"carveo/services"
 
@@ -14,8 +15,10 @@ func SetupEngineRouter(rg *gin.RouterGroup, db *gorm.DB) {
 	engineService := services.NewEngineService(engineRepository)
 	engineHandler := controllers.NewEngineController(engineService)
 
-	router := rg.Group("/engines")
+	authMiddleware := middlewares.JWTVerifyForUser(db)
 
+	router := rg.Group("/engines")
+	router.Use(authMiddleware)
 	{
 		router.GET("/", func(c *gin.Context) {
 			c.JSON(200, gin.H{
