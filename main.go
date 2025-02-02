@@ -9,6 +9,7 @@ import (
 	"log"
 
 	_ "carveo/docs"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -34,29 +35,25 @@ import (
 // @tag.name		Car Management
 // @tag.description	Endpoints related to car operations.
 
-var ConfigApp config.Config
-
-func init() {
-	var err error = nil
-	ConfigApp, err = config.LoadConfig()
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	log.Println("Starting application...!")
 	var err error = nil
 
+	if err := config.LoadConfig(); err != nil {
+		log.Fatalf("Failed to load configuration: %v", err)
+	}
+	log.Println("Config loaded...!")
+
+	configApp := config.GetConfig()
 	// initialized DB
 	dbCon := &db.DBConfig{
-		DbUser:     ConfigApp.DbUser,
-		DbHost:     ConfigApp.DbHost,
-		DbPort:     ConfigApp.DbPort,
-		DbPassword: ConfigApp.DbPassword,
-		DbName:     ConfigApp.DbName,
-		SSLMode:    ConfigApp.SSLMode,
+		DbUser:     configApp.DbUser,
+		DbHost:     configApp.DbHost,
+		DbPort:     configApp.DbPort,
+		DbPassword: configApp.DbPassword,
+		DbName:     configApp.DbName,
+		SSLMode:    configApp.SSLMode,
 	}
 	err = db.ConnectDB(dbCon)
 	if err != nil {
@@ -80,14 +77,14 @@ func main() {
 	// swagger handler for gin
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// setup default router
-	routers.SetupDefaultRouter(router, ConfigApp.Port)
+	routers.SetupDefaultRouter(router, configApp.Port)
 
 	log.Println("Swagger handler initialized...")
-	log.Println("Starting Gin server on port:", ConfigApp.Port)
+	log.Println("Starting Gin server on port:", configApp.Port)
 
 	// setup health check router
 	routers.SetupHealthCheckRouter(router)
 	// run server
-	router.Run(":" + ConfigApp.Port)
+	router.Run(":" + configApp.Port)
 
 }

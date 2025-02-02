@@ -11,28 +11,37 @@ import (
 )
 
 type mailgunService struct {
-	config.MailgunConfig
+	mailGunConfig config.MailgunConfig
 }
 
-func NewMailgunService(cfg config.MailgunConfig) *mailgunService {
+func NewMailgunService() *mailgunService {
+	cfg := config.GetConfig() // Get the globally loaded config
+	fmt.Println("Mailgun config:", cfg)
+	if cfg == nil {
+		fmt.Println("Mailgun config is not initialized")
+		return nil
+	}
+
+	fmt.Printf("Mailgun Service Initialized with Config: %+v\n", cfg.MailgunConfig)
+
 	return &mailgunService{
-		MailgunConfig: cfg,
+		mailGunConfig: cfg.MailgunConfig,
 	}
 }
 
 func (mg *mailgunService) SendVerificationEmail(to string, token string, username string, verificationBaseUrl string) error {
-	mgClient := mailgun.NewMailgun(mg.Domain, mg.PrivateAPIKey)
+	mgClient := mailgun.NewMailgun(mg.mailGunConfig.Domain, mg.mailGunConfig.PrivateAPIKey)
 	data := &utils.EmailDataType{}
 
 	data = &utils.EmailDataType{
 		SiteName:         "Carveo",
 		Username:         username,
-		VerificationLink: fmt.Sprintf("%s/api/userAuth/verifyEmail?token=%s", verificationBaseUrl, token),
+		VerificationLink: fmt.Sprintf("%s/api/v1/userAuth/verifyEmail?token=%s", verificationBaseUrl, token),
 	}
 
 	body := utils.GenerateEmailContentForVerificationEmailAddress(*data)
 	subject := "Verify Your Email Address"
-	message := mgClient.NewMessage(mg.SenderEmail, subject, body, to)
+	message := mgClient.NewMessage(mg.mailGunConfig.SenderEmail, subject, body, to)
 
 	message.SetHtml(body)
 
@@ -44,7 +53,7 @@ func (mg *mailgunService) SendVerificationEmail(to string, token string, usernam
 }
 
 func (mg *mailgunService) SendResetPasswordEmail(to string, token string, username string, verificationBaseUrl string) error {
-	mgClient := mailgun.NewMailgun(mg.Domain, mg.PrivateAPIKey)
+	mgClient := mailgun.NewMailgun(mg.mailGunConfig.Domain, mg.mailGunConfig.PrivateAPIKey)
 	data := &utils.EmailDataType{}
 
 	data = &utils.EmailDataType{
@@ -55,7 +64,7 @@ func (mg *mailgunService) SendResetPasswordEmail(to string, token string, userna
 
 	body := utils.GenerateEmailContentForResetPassword(*data)
 	subject := "Reset Your Password"
-	message := mgClient.NewMessage(mg.SenderEmail, subject, body, to)
+	message := mgClient.NewMessage(mg.mailGunConfig.SenderEmail, subject, body, to)
 
 	message.SetHtml(body)
 

@@ -11,7 +11,7 @@ func MigrateModels(db *gorm.DB) error {
 	if db == nil {
 		return errors.New("db instance is nil; ensure it is properly initialized")
 	}
-	// if err = db.Migrator().DropTable(&models.Car{}, &models.Engine{}); err != nil {
+	// if err = db.Migrator().DropTable(&models.Car{}, &models.Engine{}, &models.User{}); err != nil {
 	// 	panic("Failed to drop tables: " + err.Error())
 	// }
 

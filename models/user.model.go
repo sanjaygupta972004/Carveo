@@ -13,26 +13,26 @@ import (
 
 type User struct {
 	UserID             uuid.UUID      `gorm:"type:uuid;primaryKey;unique; not null; index" json:"userID"`
-	FullName           string         `gorm:"not null"`
-	Email              string         `gorm:"unique;not null"`
-	ProfileImage       string         `gorm:"default:null"`
-	PassWord           string         `gorm:"not null"`
-	IsEmailVerified    bool           `gorm:"default:false"`
-	IsMobileVerified   bool           `gorm:"default:false"`
-	AuthToken          string         `gorm:"default:null"`
-	ResetPasswordToken string         `gorm:"default:null"`
-	IsAdmin            bool           `gorm:"default:false"`
-	MobileNumber       string         `gorm:"default:null"`
-	CreatedAt          time.Time      `gorm:"autoCreateTime"`
-	UpdatedAt          time.Time      `gorm:"autoUpdateTime"`
-	DeletedAt          gorm.DeletedAt `gorm:"index"`
+	FullName           string         `gorm:"not null " json:"fullName"`
+	Email              string         `gorm:"unique;not null" json:"email"`
+	ProfileImage       string         `gorm:"default:null" json:"profileImage"`
+	PassWord           string         `gorm:"not null" json:"password"`
+	IsEmailVerified    bool           `gorm:"default:false" json:"isEmailVerified"`
+	IsMobileVerified   bool           `gorm:"default:false" json:"isMobileVerified"`
+	AuthToken          string         `gorm:"default:null" json:"authToken"`
+	ResetPasswordToken string         `gorm:"default:null" json:"resetPasswordToken"`
+	IsAdmin            bool           `gorm:"default:false" json:"isAdmin"`
+	MobileNumber       string         `gorm:"default:null" json:"mobileNumber"`
+	CreatedAt          time.Time      `gorm:"autoCreateTime" json:"createdAt"`
+	UpdatedAt          time.Time      `gorm:"autoUpdateTime" json:"updatedAt"`
+	DeletedAt          gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 	// Relationships
 	Car []Car `gorm:"foreignKey:UserID; references:UserID; constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	id := uuid.Must(uuid.NewV4())
-	if u.UserID != uuid.Nil {
+	if id != uuid.Nil {
 		u.UserID = id
 	}
 	if err := validations.ValidateUser(validations.User{

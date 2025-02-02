@@ -28,7 +28,7 @@ type engineController struct {
 	engineService services.EngineService
 }
 
-// @Summary Create Engine for a Car
+// @Summary Create Engine for a car
 // @Description Create Engine for a Car by Car ID
 // @Tags Engine
 // @Accept json

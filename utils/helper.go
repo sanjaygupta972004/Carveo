@@ -58,3 +58,20 @@ func CompareHashAndPassword(hashedPassword, password string) error {
 	}
 	return nil
 }
+
+func GetUserIdFromHeader(c *gin.Context) (string, error) {
+	user, exists := c.Get("user")
+	if !exists {
+		return "", fmt.Errorf("failed to get user from header")
+	}
+	userMap, ok := user.(map[string]interface{})
+	if !ok {
+		return "", fmt.Errorf("failed to convert user to map in helper function")
+	}
+
+	userID, ok := userMap["userID"].(string)
+	if !ok {
+		return "", fmt.Errorf("failed to extract user ID from map")
+	}
+	return userID, nil
+}

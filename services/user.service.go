@@ -34,7 +34,6 @@ type UserService interface {
 	GetUserProfile(id string) (models.User, error)
 	UpdateUserProfile(id string, user models.User) (models.User, error)
 	DeleteUserProfile(id string) (string, error)
-	GetAllUsers() ([]models.User, error)
 }
 
 type userService struct {
@@ -49,7 +48,7 @@ func NewUserService(userRepository repositories.UserRepository) UserService {
 
 func (u *userService) RegisterUser(user models.User) (models.User, error) {
 	var reqData models.User
-	JwtToken := os.Getenv("JWT_SECRET")
+	JwtToken := config.GetConfig().JwtSecret
 	baseUrl := os.Getenv("SERVER_BASE_URL")
 	if JwtToken == "" && baseUrl == "" {
 		return models.User{}, fmt.Errorf("JWT_SECRET environment variable not set")
@@ -76,7 +75,7 @@ func (u *userService) RegisterUser(user models.User) (models.User, error) {
 		return models.User{}, err
 	}
 
-	mailgun := email.NewMailgunService(config.MailgunConfig{})
+	mailgun := email.NewMailgunService()
 	err = mailgun.SendVerificationEmail(userData.Email, emailVerificationToken, userData.FullName, baseUrl)
 	if err != nil {
 		return models.User{}, err
@@ -93,17 +92,10 @@ func (u *userService) VarifyEmail(email string) error {
 }
 
 func (u *userService) LoginUser(email string, password string) (UserLoginData, error) {
-	user, err := u.userRepository.LoginUser(email, password)
+	user, err := u.userRepository.LoginUser(email)
 	if err != nil {
 		return UserLoginData{}, err
 	}
-
-	// compare password
-	err = utils.CompareHashAndPassword(user.PassWord, password)
-	if err != nil {
-		return UserLoginData{}, err
-	}
-
 	// generate jwt token and set in cookie
 	signedRefreshToken, err := auth.SignJWTForUser(&user)
 	if err != nil {
@@ -127,14 +119,6 @@ func (u *userService) LoginUser(email string, password string) (UserLoginData, e
 		UpdatedAt:        user.UpdatedAt.String(),
 	}
 	return userData, nil
-}
-
-func (u *userService) GetAllUsers() ([]models.User, error) {
-	users, err := u.userRepository.GetAllUsers()
-	if err != nil {
-		return []models.User{}, err
-	}
-	return users, nil
 }
 
 func (u *userService) GetUserProfile(id string) (models.User, error) {

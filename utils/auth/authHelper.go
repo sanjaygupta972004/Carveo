@@ -1,9 +1,9 @@
 package auth
 
 import (
+	"carveo/config"
 	"carveo/models"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -16,7 +16,7 @@ func SignJWTForUser(user *models.User) (string, error) {
 		"iss":   "oauth-app-golang",
 		"exp":   time.Now().Add(time.Hour * 24 * 2).Unix(),
 	}
-	secretKey := os.Getenv("JWT_SECRET_KEY")
+	secretKey := config.GetConfig().JwtSecret
 	if secretKey == "" {
 		return "", fmt.Errorf("JWT_SECRET_KEY environment variable not set")
 	}
@@ -37,7 +37,8 @@ func SignJWTAccessTokenForTravelAgency(user *models.User) (string, error) {
 		"iss":   "oauth-app-golang",
 		"exp":   time.Now().Add(time.Hour * 24 * 2).Unix(),
 	}
-	secretKey := os.Getenv("JWT_SECRET_KEY")
+	secretKey := config.GetConfig().JwtSecret
+
 	if secretKey == "" {
 		return "", fmt.Errorf("JWT_SECRET_KEY environment variable not set")
 	}

@@ -10,11 +10,10 @@ import (
 type UserRepository interface {
 	CreateUser(user models.User) (models.User, error)
 	VarifyEmail(email string) error
-	LoginUser(email, password string) (models.User, error)
+	LoginUser(email string) (models.User, error)
 	GetUserByID(id uuid.UUID) (models.User, error)
 	UpdateUser(id uuid.UUID, user models.User) (models.User, error)
 	DeleteUser(id uuid.UUID) (string, error)
-	GetAllUsers() ([]models.User, error)
 }
 
 type userRepository struct {
@@ -52,27 +51,18 @@ func (u *userRepository) VarifyEmail(email string) error {
 	return nil
 }
 
-func (u *userRepository) GetAllUsers() ([]models.User, error) {
-	var users []models.User
-	err := u.db.Find(&users).Error
-	if err != nil {
-		return []models.User{}, err
-	}
-	return users, nil
-}
-
-func (u *userRepository) GetUserByID(id uuid.UUID) (models.User, error) {
+func (u *userRepository) LoginUser(email string) (models.User, error) {
 	var user models.User
-	err := u.db.Where("user_id = ?", id).First(&user).Error
+	err := u.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return models.User{}, err
 	}
 	return user, nil
 }
 
-func (u *userRepository) LoginUser(email string, password string) (models.User, error) {
+func (u *userRepository) GetUserByID(id uuid.UUID) (models.User, error) {
 	var user models.User
-	err := u.db.Where("email = ? AND pass_word = ?", email, password).First(&user).Error
+	err := u.db.Where("user_id = ?", id).First(&user).Error
 	if err != nil {
 		return models.User{}, err
 	}

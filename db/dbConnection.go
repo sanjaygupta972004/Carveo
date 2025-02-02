@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -15,6 +16,7 @@ import (
 )
 
 var (
+	once    sync.Once
 	DB      *gorm.DB
 	PGXPool *pgxpool.Pool
 )
