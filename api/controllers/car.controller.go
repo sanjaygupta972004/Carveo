@@ -51,7 +51,12 @@ func (cc *carController) CreateCar(ctx *gin.Context) {
 		return
 	}
 
-	data, err := cc.carService.CreateCar(carRequest)
+	useID, err := utils.GetUserIdFromHeader(ctx)
+	if err != nil {
+		utils.ErrorResponse(ctx, http.StatusBadRequest, "User ID should be provided", err)
+		return
+	}
+	data, err := cc.carService.CreateCar(carRequest, useID)
 	if err != nil {
 		utils.ErrorResponse(ctx, http.StatusInternalServerError, utils.ErrInternalServer, err)
 		return

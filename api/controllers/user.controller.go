@@ -62,7 +62,7 @@ func (u *userController) RegisterUser(c *gin.Context) {
 // @Success 200 {string}  "Email verified successfully"
 // @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
-// @Router /userAuth/verifyEmail?token= "value" [get]
+// @Router /userAuth/verifyEmail [get]
 func (u *userController) VerifyEmail(c *gin.Context) {
 	secret := config.GetConfig().JwtSecret
 	if secret == "" {
@@ -191,7 +191,7 @@ func (u *userController) UpdateUserProfile(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
-// @Success 200 {string} "User profile deleted successfully"
+// @Success 200 {string} string "User profile deleted successfully"
 // @Failure 401 {object} models.ErrorResponseUserSwagger "Unauthorized User"
 // @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
 // @Router /userAuth/deleteUserProfile [delete]

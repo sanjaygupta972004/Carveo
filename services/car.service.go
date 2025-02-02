@@ -10,7 +10,7 @@ import (
 )
 
 type CarService interface {
-	CreateCar(car models.Car) (models.Car, error)
+	CreateCar(car models.Car, userID string) (models.Car, error)
 	GetCarByID(id string) (models.Car, error)
 	GetAllCars() ([]models.Car, error)
 	GetCarByBrand(brand string, isEngine bool) (models.Car, error)
@@ -28,11 +28,15 @@ func NewCarService(carRepo repositories.CarRepository) CarService {
 	}
 }
 
-func (s *carService) CreateCar(car models.Car) (models.Car, error) {
+func (s *carService) CreateCar(car models.Car, userID string) (models.Car, error) {
 	if car.CarID != uuid.Nil {
 		return models.Car{}, errors.New("engine_id should not be provided")
 	}
-	data, err := s.carRepo.CreateCar(car)
+	idUUID, err := utils.IsUUID(userID)
+	if err != nil {
+		return models.Car{}, err
+	}
+	data, err := s.carRepo.CreateCar(car, idUUID)
 
 	if err != nil {
 		return models.Car{}, err

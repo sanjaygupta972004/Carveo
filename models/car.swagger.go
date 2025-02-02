@@ -9,6 +9,7 @@ type CarSwagger struct {
 	Brand     string  `json:"brand" example:"Tesla"`
 	FuelType  string  `json:"fuelType" example:"Electric"`
 	Price     float64 `json:"price" example:"79999.99"`
+	UserID    string  `json:"userID" example:"f47ac10b-58cc-4372-a567-0e02b2c3d479"`
 	CreatedAt string  `json:"createdAt" example:"2025-01-01T12:00:00Z"`
 	UpdatedAt string  `json:"updatedAt" example:"2025-01-01T12:00:00Z"`
 }
@@ -33,6 +34,7 @@ type SuccessResponseCarSwagger struct {
 		Brand     string  `json:"brand" example:"Tesla"`
 		FuelType  string  `json:"fuelType" example:"Electric"`
 		Price     float64 `json:"price" example:"79999.99"`
+		UserID    string  `json:"userID" example:"f47ac10b-58cc-4372-a567-0e02b2c3d479"`
 		CreatedAt string  `json:"createdAt" example:"2025-01-01T12:00:00Z"`
 		UpdatedAt string  `json:"updatedAt" example:"2025-01-01T12:00:00Z"`
 	} `json:"data"`

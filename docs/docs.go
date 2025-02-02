@@ -299,7 +299,7 @@ const docTemplate = `{
                 "tags": [
                     "Engine"
                 ],
-                "summary": "Create Engine for a Car",
+                "summary": "Create Engine for a car",
                 "parameters": [
                     {
                         "type": "string",
@@ -520,6 +520,288 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/userAuth/deleteUserProfile": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Delete User Profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete User Profile",
+                "responses": {
+                    "200": {
+                        "description": "User profile deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized User",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/getUserProfile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get User Profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User Profile",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrived successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseUserSwagger"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized User",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/login": {
+            "post": {
+                "description": "Login User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged in successfully",
+                        "schema": {
+                            "$ref": "#/definitions/services.UserLoginData"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/register": {
+            "post": {
+                "description": "Register a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User Request",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseUserSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/updateUserProfile": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update User Profile",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User Profile",
+                "parameters": [
+                    {
+                        "description": "User Request",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserSwagger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/models.SuccessResponseUserSwagger"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized User",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/verifyEmail": {
+            "get": {
+                "description": "Verify Email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Verify Email",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Email verified successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -695,6 +977,27 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ErrorResponseUserSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "error": {
+                    "type": "string",
+                    "example": "Error details"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Error message "
+                },
+                "status": {
+                    "type": "string",
+                    "example": "error or failed to validation request data or server error"
+                }
+            }
+        },
         "models.SuccessResponseCarSwagger": {
             "type": "object",
             "properties": {
@@ -791,6 +1094,110 @@ const docTemplate = `{
                 }
             }
         },
+        "models.SuccessResponseUserSwagger": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "example": 200
+                },
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "createdAt": {
+                            "type": "string",
+                            "example": "2021-07-01T00:00:00Z"
+                        },
+                        "email": {
+                            "type": "string",
+                            "example": "example@gmail.com"
+                        },
+                        "fullName": {
+                            "type": "string",
+                            "example": "John Doe"
+                        },
+                        "isAdmin": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "isEmailVerified": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "isMobileVerified": {
+                            "type": "boolean",
+                            "example": false
+                        },
+                        "profileImage": {
+                            "type": "string",
+                            "example": "https://example.com/image.jpg"
+                        },
+                        "updatedAt": {
+                            "type": "string",
+                            "example": "2021-07-01T00:00:00Z"
+                        },
+                        "userID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        }
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Success message "
+                },
+                "status": {
+                    "type": "string",
+                    "example": "success"
+                }
+            }
+        },
+        "models.UserSwagger": {
+            "description": "Represents the details of a User",
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2021-07-01T00:00:00Z"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "example@gmail.com"
+                },
+                "fullName": {
+                    "type": "string",
+                    "example": "John Doe"
+                },
+                "isAdmin": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isEmailVerified": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "isMobileVerified": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "password": {
+                    "type": "string",
+                    "example": "Sdvdfgdf@234"
+                },
+                "profileImage": {
+                    "type": "string",
+                    "example": "https://example.com/image.jpg"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2021-07-01T00:00:00Z"
+                },
+                "userID": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                }
+            }
+        },
         "routers.HealthCheckResponse": {
             "type": "object",
             "properties": {
@@ -807,6 +1214,44 @@ const docTemplate = `{
                 "status": {
                     "type": "string",
                     "example": "healthy"
+                }
+            }
+        },
+        "services.UserLoginData": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "isAdmin": {
+                    "type": "boolean"
+                },
+                "isEmailVarified": {
+                    "type": "boolean"
+                },
+                "isMobileVarified": {
+                    "type": "boolean"
+                },
+                "profileImage": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
                 }
             }
         }

@@ -123,6 +123,21 @@ definitions:
         example: error or failed to validation request data or server error
         type: string
     type: object
+  models.ErrorResponseUserSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      error:
+        example: Error details
+        type: string
+      message:
+        example: 'Error message '
+        type: string
+      status:
+        example: error or failed to validation request data or server error
+        type: string
+    type: object
   models.SuccessResponseCarSwagger:
     properties:
       code:
@@ -192,6 +207,82 @@ definitions:
         example: success
         type: string
     type: object
+  models.SuccessResponseUserSwagger:
+    properties:
+      code:
+        example: 200
+        type: integer
+      data:
+        properties:
+          createdAt:
+            example: "2021-07-01T00:00:00Z"
+            type: string
+          email:
+            example: example@gmail.com
+            type: string
+          fullName:
+            example: John Doe
+            type: string
+          isAdmin:
+            example: false
+            type: boolean
+          isEmailVerified:
+            example: false
+            type: boolean
+          isMobileVerified:
+            example: false
+            type: boolean
+          profileImage:
+            example: https://example.com/image.jpg
+            type: string
+          updatedAt:
+            example: "2021-07-01T00:00:00Z"
+            type: string
+          userID:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+            type: string
+        type: object
+      message:
+        example: 'Success message '
+        type: string
+      status:
+        example: success
+        type: string
+    type: object
+  models.UserSwagger:
+    description: Represents the details of a User
+    properties:
+      createdAt:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      email:
+        example: example@gmail.com
+        type: string
+      fullName:
+        example: John Doe
+        type: string
+      isAdmin:
+        example: false
+        type: boolean
+      isEmailVerified:
+        example: false
+        type: boolean
+      isMobileVerified:
+        example: false
+        type: boolean
+      password:
+        example: Sdvdfgdf@234
+        type: string
+      profileImage:
+        example: https://example.com/image.jpg
+        type: string
+      updatedAt:
+        example: "2021-07-01T00:00:00Z"
+        type: string
+      userID:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
+    type: object
   routers.HealthCheckResponse:
     properties:
       code:
@@ -204,6 +295,31 @@ definitions:
         type: string
       status:
         example: healthy
+        type: string
+    type: object
+  services.UserLoginData:
+    properties:
+      accessToken:
+        type: string
+      createdAt:
+        type: string
+      email:
+        type: string
+      fullName:
+        type: string
+      isAdmin:
+        type: boolean
+      isEmailVarified:
+        type: boolean
+      isMobileVarified:
+        type: boolean
+      profileImage:
+        type: string
+      refreshToken:
+        type: string
+      updatedAt:
+        type: string
+      userID:
         type: string
     type: object
 host: http://localhost:8090
@@ -430,7 +546,7 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
-      summary: Create Engine for a Car
+      summary: Create Engine for a car
       tags:
       - Engine
   /engines/deleteEngine/{engineID}:
@@ -553,6 +669,187 @@ paths:
       summary: Health Check Endpoint
       tags:
       - Health
+  /userAuth/deleteUserProfile:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User Profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile deleted successfully
+          schema:
+            type: string
+        "401":
+          description: Unauthorized User
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete User Profile
+      tags:
+      - User
+  /userAuth/getUserProfile:
+    get:
+      consumes:
+      - application/json
+      description: Get User Profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile retrived successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseUserSwagger'
+        "401":
+          description: Unauthorized User
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: Get User Profile
+      tags:
+      - User
+  /userAuth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            $ref: '#/definitions/services.UserLoginData'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Login User
+      tags:
+      - User
+  /userAuth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: User Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseUserSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Register a new user
+      tags:
+      - User
+  /userAuth/updateUserProfile:
+    patch:
+      consumes:
+      - application/json
+      description: Update User Profile
+      parameters:
+      - description: User Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile updated successfully
+          schema:
+            $ref: '#/definitions/models.SuccessResponseUserSwagger'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "401":
+          description: Unauthorized User
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      security:
+      - ApiKeyAuth: []
+      summary: Update User Profile
+      tags:
+      - User
+  /userAuth/verifyEmail:
+    get:
+      consumes:
+      - application/json
+      description: Verify Email
+      parameters:
+      - description: Token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Email verified successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Verify Email
+      tags:
+      - User
 securityDefinitions:
   CarveoAPIKey:
     description: 'JWT token required to access endpoints. Add the token in the "Authorization"

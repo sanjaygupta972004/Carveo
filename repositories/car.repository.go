@@ -11,7 +11,7 @@ type CarRepository interface {
 	GetCarByID(id uuid.UUID) (models.Car, error)
 	GetAllCars() ([]models.Car, error)
 	GetCarByBrand(brand string, isEngine bool) (models.Car, error)
-	CreateCar(car models.Car) (models.Car, error)
+	CreateCar(car models.Car, userID uuid.UUID) (models.Car, error)
 	UpdateCar(id uuid.UUID, car models.Car) (models.Car, error)
 	DeleteCar(id uuid.UUID) error
 }
@@ -56,13 +56,15 @@ func (r *carRepository) GetCarByBrand(brand string, isEngine bool) (models.Car, 
 	return car, nil
 }
 
-func (r *carRepository) CreateCar(car models.Car) (models.Car, error) {
+func (r *carRepository) CreateCar(car models.Car, userID uuid.UUID) (models.Car, error) {
 	if err := car.BeforeCreate(r.db); err != nil {
 		return models.Car{}, err
 	}
-
 	if err := r.db.Where("car_id = ?", car.CarID).Find(&car).Error; err != nil {
 		return models.Car{}, err
+	}
+	if userID != uuid.Nil {
+		car.UserID = userID
 	}
 	if err := r.db.Create(&car).Error; err != nil {
 		return models.Car{}, err
