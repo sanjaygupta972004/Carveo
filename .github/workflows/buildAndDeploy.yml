@@ -24,13 +24,17 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Debug DOCKER_USERNAME
+        run: echo "DOCKER_USERNAME is '${{ secrets.DOCKER_USERNAME }}'"
+  
       
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME || 'defaultuser' }}/carveo:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/carveo:latest
 #     runs-on: ["self-hosted", "dev"]
 #     steps:
 #       - name: Pull docker image
