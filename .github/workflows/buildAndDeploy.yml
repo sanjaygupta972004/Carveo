@@ -1,28 +1,60 @@
 # This workflow will build a golang project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Go
 
+name: Carveo build 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - main
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build docker image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest .
+      - name: Push Image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.23'
+#   deploy:
+#     needs: build
+#     runs-on: ["self-hosted", "dev"]
+#     steps:
+#       - name: Pull docker image
+#         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
 
-    - name: Build
-      run: go build -v ./...
+#       - name: Delete old container
+#         run: sudo docker rm -f rambler-be-dev-container || true
+  
+#       - name: Run docker container          
+#         run: sudo docker run -d -p 8080:8080 --init --name rambler-be-dev-container ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
 
-    - name: Test
-      run: go test -v ./...
+# name: Go
+
+# on:
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
+
+# jobs:
+
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@v4
+
+#     - name: Set up Go
+#       uses: actions/setup-go@v4
+#       with:
+#         go-version: '1.23'
+
+#     - name: Build
+#       run: go build -v ./...
+
+#     - name: Test
+#       run: go test -v ./...
