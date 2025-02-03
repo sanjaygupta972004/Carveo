@@ -13,12 +13,16 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+
       - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
       - name: Build docker image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/carveo:latest .
+
       - name: Push Image to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/carveo:latest
+
 
 #   deploy:
 #     needs: build
