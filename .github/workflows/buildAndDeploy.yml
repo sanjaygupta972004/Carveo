@@ -35,39 +35,4 @@ jobs:
           context: .
           push: true
           tags: sanjaygupta09072004/carveo:latest
-#     runs-on: ["self-hosted", "dev"]
-#     steps:
-#       - name: Pull docker image
-#         run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
 
-#       - name: Delete old container
-#         run: sudo docker rm -f rambler-be-dev-container || true
-  
-#       - name: Run docker container          
-#         run: sudo docker run -d -p 8080:8080 --init --name rambler-be-dev-container ${{ secrets.DOCKER_USERNAME }}/rambler-be-dev:latest
-
-# name: Go
-
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@v4
-
-#     - name: Set up Go
-#       uses: actions/setup-go@v4
-#       with:
-#         go-version: '1.23'
-
-#     - name: Build
-#       run: go build -v ./...
-
-#     - name: Test
-#       run: go test -v ./...
