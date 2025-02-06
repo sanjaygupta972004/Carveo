@@ -19,16 +19,24 @@ services:
       replicas: 1
     networks:
       - app_network
-
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
+     
+  webserver:
+    image: nginx:latest
     ports:
-      - "80:80"
+      - 80:80
+      - 443:443
     restart: always
+    volumes:
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+      - ./nginx/certbot/www:/var/www/certbot/:ro
+      - ./nginx/certbot/conf/:/etc/nginx/ssl/:ro
     deploy:
       mode: replicated
       replicas: 1
     networks:
       - app_network
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+    - ./nginx/certbot/www/:/var/www/certbot/:rw
+    - ./nginx/certbot/conf/:/etc/letsencrypt/:rw

@@ -6,11 +6,14 @@ import (
 	"carveo/config"
 	"carveo/db"
 	"carveo/db/migration"
+	"carveo/logger"
 	"log"
+	"os"
 
 	_ "carveo/docs"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -36,17 +39,20 @@ import (
 // @tag.description	Endpoints related to car operations.
 
 func main() {
-	gin.SetMode(gin.ReleaseMode)
-	log.Println("Starting application...!")
-	var err error = nil
 
+	logger.Info("Starting application...!", logrus.Fields{})
+
+	// Load configuration
 	if err := config.LoadConfig(); err != nil {
-		log.Fatalf("Failed to load configuration: %v", err)
+		logger.Error("Failed to load configuration:", logrus.Fields{
+			"details": err,
+		})
 	}
-	log.Println("Config loaded...!")
+	logger.Info("Config loaded...!", logrus.Fields{})
 
 	configApp := config.GetConfig()
-	// initialized DB
+
+	// Initialize DB
 	dbCon := &db.DBConfig{
 		DbUser:     configApp.DbUser,
 		DbHost:     configApp.DbHost,
@@ -55,36 +61,64 @@ func main() {
 		DbName:     configApp.DbName,
 		SSLMode:    configApp.SSLMode,
 	}
-	err = db.ConnectDB(dbCon)
-	if err != nil {
-		log.Fatalf("Failed to connect postgres db : %v", err)
+
+	if err := db.ConnectDB(dbCon); err != nil {
+		logger.Error("Failed to connect to Postgres DB:", logrus.Fields{
+			"details": err,
+		})
+
+		log.Fatal("Critical Error: Shutting down application due to database connection failure.")
+		os.Exit(1)
+
 	}
 	defer db.DisConnectDB()
 
-	db := db.DB
+	// Ensure DB connection is valid
+	if db.DB == nil {
+		logger.Error("Database connection is nil", logrus.Fields{})
+	}
+
+	dbInstance := db.DB
+
 	// Migrate models
-	if err := migration.MigrateModels(db); err != nil {
-		log.Fatalf("Failed to migrate models: %v", err)
+	if err := migration.MigrateModels(dbInstance); err != nil {
+		logger.Error("Failed to migrate models:", logrus.Fields{
+			"details": err,
+		})
+		log.Fatal("Critical Error: Shutting down application due to migration failure.")
+		os.Exit(1)
+	}
+
+	// Initialize Gin server
+	router := gin.New()
+
+	// Global Middleware
+	router.Use(middlewares.RecoverMiddleware())
+	router.Use(middlewares.LoggerMiddleware())
+	router.Use(middlewares.CorsMiddleWare())
+
+	// Setup routers
+	routers.SetupRouter(router, dbInstance)
+	routers.SetupHealthCheckRouter(router)
+
+	// Swagger documentation
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	logger.Info("Swagger handler initialized...", logrus.Fields{})
+
+	// Validate port before starting the server
+	if configApp.Port == "" {
+		logger.Error("Server port is not configured", logrus.Fields{})
 
 	}
-	// initialized gin server
-	router := gin.New()
-	// global middleware
-	router.Use(middlewares.CorsMiddleWare())
-	router.Use(middlewares.RecoverMiddleware())
-	// setup routers
-	routers.SetupRouter(router, db)
-	// swagger handler for gin
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	// setup default router
-	routers.SetupDefaultRouter(router, configApp.Port)
 
-	log.Println("Swagger handler initialized...")
-	log.Println("Starting Gin server on port:", configApp.Port)
-
-	// setup health check router
-	routers.SetupHealthCheckRouter(router)
-	// run server
-	router.Run(":" + configApp.Port)
-
+	logger.Info("Starting Gin server on port: %s", logrus.Fields{
+		"port": configApp.DbPort,
+	})
+	if err := router.Run(":" + configApp.Port); err != nil {
+		logger.Info("Failed to start server:", logrus.Fields{
+			"details": err,
+		})
+		log.Fatal("Critical Error: Shutting down application due to server start failure.")
+		os.Exit(1)
+	}
 }

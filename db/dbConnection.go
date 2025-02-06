@@ -119,7 +119,6 @@ func DisConnectDB() error {
 			return err
 		}
 
-		log.Println("Database connection closed successfully")
 	}
 
 	return nil
