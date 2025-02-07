@@ -2,8 +2,7 @@ name: Deploy Carveo
 
 on:
   push:
-    branches: [ main ]  # or your default branch
-
+    branches: [ main ] 
 jobs:
   deploy:
     runs-on: self-hosted
@@ -16,12 +15,23 @@ jobs:
         sudo rm -rf /home/ubuntu/actions-runner/_work/Carveo/Carveo/* || true
     
     - uses: actions/checkout@v4
-    
     - name: Set up permissions after checkout
       run: |
         sudo chown -R ubuntu:ubuntu .
         sudo chmod -R 755 .
         
-    - name: Docker compose up
+    - name: Set up Docker permissions
       run: |
+        sudo chown -R ubuntu:docker /var/run/docker.sock
+        sudo chmod 666 /var/run/docker.sock
+        
+    - name: Build and deploy
+      run: |
+        # First stop and remove existing containers if they exist
+        docker compose down || true
+        
+        # Build the image
+        docker build -t carveo-carveo .
+        
+        # Start services
         docker compose up -d
