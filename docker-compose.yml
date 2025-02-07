@@ -1,7 +1,7 @@
 version: '3'
 
 networks:
-  app_network:
+  carveo_network:
     driver: bridge
 
 services:
@@ -18,7 +18,7 @@ services:
       mode: replicated
       replicas: 1
     networks:
-      - app_network
+      - carveo_network
      
   webserver:
     image: nginx:latest
@@ -34,7 +34,7 @@ services:
       mode: replicated
       replicas: 1
     networks:
-      - app_network
+      - carveo_network
   certbot:
     image: certbot/certbot:latest
     volumes:
