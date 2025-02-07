@@ -1,0 +1,4 @@
+{"level":"info","msg":"Starting application...!","time":"2025-02-08T04:19:39+05:30"}
+{"level":"info","msg":"Config loaded...!","time":"2025-02-08T04:19:39+05:30"}
+{"level":"info","msg":"Swagger handler initialized...","time":"2025-02-08T04:19:44+05:30"}
+{"level":"info","msg":"Starting Gin server on port: %s","port":"16033","time":"2025-02-08T04:19:44+05:30"}
