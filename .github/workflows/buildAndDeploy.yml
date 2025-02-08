@@ -27,11 +27,6 @@ jobs:
         
     - name: Build and deploy
       run: |
-        # First stop and remove existing containers if they exist
         docker compose down || true
         
-        # Build the image
-        docker build -t carveo-carveo .
-        
-        # Start services
         docker compose up -d
