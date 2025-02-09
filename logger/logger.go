@@ -1,6 +1,9 @@
 package logger
 
 import (
+	//"carveo/config"
+	"carveo/config"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -13,22 +16,14 @@ import (
 
 var log *logrus.Logger
 
-func setLogLevel() {
-	ginMode := os.Getenv("GIN_MODE")
-
-	switch ginMode {
-	case gin.ReleaseMode:
-		log.SetLevel(logrus.InfoLevel)
-	case gin.DebugMode:
-		log.SetLevel(logrus.DebugLevel)
-	case gin.TestMode:
-		log.SetLevel(logrus.WarnLevel)
-	default:
-		log.SetLevel(logrus.DebugLevel)
-	}
-}
-
 func init() {
+	if err := config.LoadConfig(); err != nil {
+		fmt.Println("Failed to load configuration:", err)
+		os.Exit(1)
+	}
+
+	configApp := config.GetConfig()
+
 	log = logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{
 		TimestampFormat: time.RFC3339,
@@ -55,7 +50,17 @@ func init() {
 	multiWriter := io.MultiWriter(writer, os.Stdout)
 	log.SetOutput(multiWriter)
 
-	setLogLevel()
+	if configApp.GinMode == "release" {
+		gin.SetMode(gin.ReleaseMode)
+		log.SetLevel(logrus.InfoLevel)
+	} else {
+		gin.SetMode(gin.DebugMode)
+		log.SetLevel(logrus.DebugLevel)
+	}
+
+	log.WithFields(logrus.Fields{
+		"app_env": configApp.GinMode,
+	}).Info("Logger initialized successfully")
 }
 
 func GetLogger() *logrus.Logger {

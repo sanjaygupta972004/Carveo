@@ -41,14 +41,15 @@ import (
 func main() {
 
 	logger.Info("Starting application...!", logrus.Fields{})
-
 	// Load configuration
 	if err := config.LoadConfig(); err != nil {
 		logger.Error("Failed to load configuration:", logrus.Fields{
 			"details": err,
 		})
+		log.Fatal("Critical Error: Shutting down application due to config failure.")
+		return
 	}
-	logger.Info("Config loaded...!", logrus.Fields{})
+	logger.Info("Config loaded successfully", logrus.Fields{})
 
 	configApp := config.GetConfig()
 

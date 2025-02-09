@@ -27,6 +27,7 @@ type Config struct {
 	JwtSecret     string
 	SSLMode       string
 	Port          string
+	GinMode       string
 	MailgunConfig MailgunConfig
 }
 
@@ -81,6 +82,7 @@ func LoadConfig() error {
 			SSLMode:       os.Getenv("DB_SSLMODE"),
 			JwtSecret:     os.Getenv("JWT_SECRET"),
 			Port:          os.Getenv("PORT"),
+			GinMode:       os.Getenv("GIN_MODE"),
 			MailgunConfig: mailgunConfig,
 		}
 
@@ -93,6 +95,7 @@ func LoadConfig() error {
 			"DB_NAME":     config.DbName,
 			"JWT_SECRET":  config.JwtSecret,
 			"PORT":        config.Port,
+			"GIN_MODE":    config.DbUser,
 		}
 
 		for key, value := range requiredFields {
@@ -105,6 +108,7 @@ func LoadConfig() error {
 		isLoaded = true
 	})
 
+	fmt.Println("Config loaded successfully")
 	return loadErr
 }
 
