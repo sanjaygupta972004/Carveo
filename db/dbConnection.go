@@ -120,6 +120,5 @@ func DisConnectDB() error {
 		}
 
 	}
-
 	return nil
 }

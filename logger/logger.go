@@ -13,6 +13,21 @@ import (
 
 var log *logrus.Logger
 
+func setLogLevel() {
+	ginMode := os.Getenv("GIN_MODE")
+
+	switch ginMode {
+	case gin.ReleaseMode:
+		log.SetLevel(logrus.InfoLevel)
+	case gin.DebugMode:
+		log.SetLevel(logrus.DebugLevel)
+	case gin.TestMode:
+		log.SetLevel(logrus.WarnLevel)
+	default:
+		log.SetLevel(logrus.DebugLevel)
+	}
+}
+
 func init() {
 	log = logrus.New()
 	log.SetFormatter(&logrus.JSONFormatter{
@@ -40,11 +55,11 @@ func init() {
 	multiWriter := io.MultiWriter(writer, os.Stdout)
 	log.SetOutput(multiWriter)
 
-	if gin.Mode() == gin.ReleaseMode {
-		log.SetLevel(logrus.InfoLevel)
-	} else {
-		log.SetLevel(logrus.DebugLevel)
-	}
+	setLogLevel()
+}
+
+func GetLogger() *logrus.Logger {
+	return log
 }
 
 func Info(message string, fields logrus.Fields) {

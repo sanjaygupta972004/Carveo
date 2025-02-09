@@ -10,9 +10,11 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8090:8090"
+      - "8080:8080"
+    env_file:
+      - ./env/.env.prod
     volumes:
-      - ./env:/app/env
+      - ./env:/app/env  
     restart: always
     deploy:
       mode: replicated

@@ -37,7 +37,7 @@ type MailgunConfig struct {
 }
 
 func LoadEnvFile(env string) error {
-	envPath := filepath.Join("env", env+".env")
+	envPath := filepath.Join("env", ".env."+env)
 	fmt.Println("Loading environment file: ", envPath)
 	return godotenv.Load(envPath)
 }

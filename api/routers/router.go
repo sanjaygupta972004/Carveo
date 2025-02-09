@@ -1,9 +1,11 @@
 package routers
 
 import (
+	"carveo/logger"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -44,7 +46,9 @@ func SetupRouter(router *gin.Engine, db *gorm.DB) {
 }
 
 func SetupDefaultRouter(router *gin.Engine, port string) {
+	log := logger.GetLogger()
 	router.GET("/", func(ctx *gin.Context) {
+		log.WithFields(logrus.Fields{"endpoint": "/"}).Info("Home route accessed")
 		ctx.JSON(200, gin.H{
 			"message": fmt.Sprintf("Welcome to Carveo, Server is running on port : %s", port),
 		})

@@ -23,12 +23,12 @@ import (
 // @description	API documentation for Carevo, a car management system for tracking, servicing, and managing vehicles.
 // @termsOfService	https://carveo.com/terms
 
-// @host		http://localhost:8090
+// @host		https://api.carveo.site
 // @BasePath	/api/v1
 
 // @contact.name		Support Team
 // @contact.url		https://carveo.com/support
-// @contact.email		sanjaygupta07054@gmailcom
+// @contact.email		sanjaygupta7212@gmailcom
 
 // @securityDefinitions.apikey	      CarveoAPIKey
 // @in						header

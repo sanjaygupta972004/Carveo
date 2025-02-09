@@ -11,10 +11,10 @@
 
 # Env files (for local development; don't commit sensitive credentials)
 *.env
-*.cmd.env
-*.dev.env
-*.prod.env
-*.test.env
+*.env.cmd
+*.env.prod
+*.env.dev
+*.env.test
 
 # IDE-specific files (adjust for your editor)
 .vscode/
