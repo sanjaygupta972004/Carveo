@@ -2,15 +2,20 @@ FROM golang:1.23.3-alpine AS builder
 
 RUN mkdir /app
 
-# set up environment variables
 WORKDIR /app
+
 COPY go.mod go.sum ./
 
-RUN go mod download     
+RUN go mod download   
+
 COPY /env /app/env
+
 COPY . .
 
+RUN go clean -cache -modcache -i
+
 RUN CGO_ENABLED=0 GOOS=linux go build -o carveoApp ./main.go   
+
 RUN chmod +x /app/carveoApp
 
 # This is the final image
