@@ -12,13 +12,40 @@ jobs:
       run: |
         sudo chown -R ubuntu:ubuntu /home/ubuntu/actions-runner/_work/Carveo/Carveo/ || true
         sudo chmod -R 755 /home/ubuntu/actions-runner/_work/Carveo/Carveo/ || true
-        find /home/ubuntu/actions-runner/_work/Carveo/Carveo/ -mindepth 1 ! -name 'env' -exec sudo rm -rf {} +
+        sudo rm -rf /home/ubuntu/actions-runner/_work/Carveo/Carveo/* || true
     
     - uses: actions/checkout@v4
     - name: Set up permissions after checkout
       run: |
         sudo chown -R ubuntu:ubuntu .
         sudo chmod -R 755 .
+
+    - name: Create env file 
+      run: |
+        mkdir -p env 
+        cat << EOF >  env/.env.prod
+         # Database Configuration
+        DB_USER=${{ secrets.DB_USER }}
+        DB_HOST=${{ secrets.DB_HOST }}
+        DB_PORT=${{ secrets.DB_PORT }}
+        DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+        DB_NAME=${{ secrets.DB_NAME }}
+        DB_SSLMODE=${{ secrets.DB_SSLMODE }}
+    
+        # Auth Configuration
+        JWT_SECRET=${{ secrets.JWT_SECRET }}
+    
+        # App Configuration
+        PORT=${{ secrets.PORT }}
+        APP_ENV=${{ secrets.APP_ENV }}
+        GIN_MODE=${{ secrets.GIN_MODE }}
+    
+        # Mailgun Configuration
+        MAILGUN_DOMAIN=${{ secrets.MAILGUN_DOMAIN }}
+        MAILGUN_API_KEY=${{ secrets.MAILGUN_API_KEY }}
+        MAILGUN_SENDER_EMAIL=${{ secrets.MAILGUN_SENDER_EMAIL }}
+        SERVER_BASE_URL=${{ secrets.SERVER_BASE_URL }}
+        EOF
         
     - name: Set up Docker permissions
       run: |
@@ -33,5 +60,5 @@ jobs:
          echo "🔄 Building and starting new containers..."
          docker compose up --build -d || { echo "❌ Deployment failed! Check logs."; exit 1; }
          echo "✅ Checking if services are running..."
-         sleep 10 
+         sleep 10  # Give some time for services to start
          docker compose ps
