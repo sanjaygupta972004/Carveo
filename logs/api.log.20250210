@@ -1,0 +1,12 @@
+{"app_env":"debug","level":"info","msg":"Logger initialized successfully","time":"2025-02-10T04:27:56+05:30"}
+{"level":"info","msg":"Starting application...!","time":"2025-02-10T04:27:56+05:30"}
+{"level":"info","msg":"Config loaded successfully","time":"2025-02-10T04:27:56+05:30"}
+{"level":"info","msg":"Swagger handler initialized...","time":"2025-02-10T04:28:02+05:30"}
+{"level":"info","msg":"Starting Gin server on port: %s","port":"16033","time":"2025-02-10T04:28:02+05:30"}
+{"details":"listen tcp :8080: bind: address already in use","level":"info","msg":"Failed to start server:","time":"2025-02-10T04:28:02+05:30"}
+{"app_env":"debug","level":"info","msg":"Logger initialized successfully","time":"2025-02-10T04:28:25+05:30"}
+{"level":"info","msg":"Starting application...!","time":"2025-02-10T04:28:25+05:30"}
+{"level":"info","msg":"Config loaded successfully","time":"2025-02-10T04:28:25+05:30"}
+{"level":"info","msg":"Swagger handler initialized...","time":"2025-02-10T04:28:31+05:30"}
+{"level":"info","msg":"Starting Gin server on port: %s","port":"16033","time":"2025-02-10T04:28:31+05:30"}
+{"details":"listen tcp :8080: bind: address already in use","level":"info","msg":"Failed to start server:","time":"2025-02-10T04:28:31+05:30"}

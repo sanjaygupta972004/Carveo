@@ -10,7 +10,7 @@ RUN go mod download
 COPY /env /app/env
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o carveoApp ./main.go      
+RUN CGO_ENABLED=0 GOOS=linux go build -o carveoApp ./main.go   
 RUN chmod +x /app/carveoApp
 
 # This is the final image
