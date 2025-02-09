@@ -33,5 +33,5 @@ jobs:
          echo "🔄 Building and starting new containers..."
          docker compose up --build -d || { echo "❌ Deployment failed! Check logs."; exit 1; }
          echo "✅ Checking if services are running..."
-         sleep 10  # Give some time for services to start
+         sleep 10 
          docker compose ps

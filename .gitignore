@@ -10,7 +10,6 @@
 *.test
 
 # Env files (for local development; don't commit sensitive credentials)
-*.env
 *.env.cmd
 *.env.prod
 *.env.dev
@@ -40,4 +39,3 @@ vendor/
 .DS_Store
 Thumbs.db
 
-*.Dockerfile
