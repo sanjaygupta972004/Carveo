@@ -1,5 +1,3 @@
-version: '3'
-
 networks:
   carveo_network:
     driver: bridge
