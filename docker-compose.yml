@@ -19,6 +19,7 @@ services:
       replicas: 1
     networks:
       - carveo_network
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
      
   webserver:
     image: nginx:latest
@@ -42,4 +43,4 @@ services:
     - ./nginx/certbot/conf/:/etc/letsencrypt/:rw 
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/certbot --email sanjaygupta07054@gmail.com --agree-tos --no-eff-email -d carveo.site -d www.carveo.site
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
