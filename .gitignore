@@ -24,6 +24,7 @@
 vendor/
 
 # Temporary files and logs
+logs/
 *.log
 *.tmp
 
