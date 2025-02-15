@@ -13,7 +13,7 @@ const docTemplate = `{
         "contact": {
             "name": "Support Team",
             "url": "https://carveo.com/support",
-            "email": "sanjaygupta07054@gmailcom"
+            "email": "sanjaygupta7212@gmailcom"
         },
         "version": "{{.Version}}"
     },
@@ -903,6 +903,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "2025-01-01T12:00:00Z"
                 },
+                "userID": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                },
                 "year": {
                     "type": "string",
                     "example": "2022"
@@ -1035,6 +1039,10 @@ const docTemplate = `{
                         "updatedAt": {
                             "type": "string",
                             "example": "2025-01-01T12:00:00Z"
+                        },
+                        "userID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
                         },
                         "year": {
                             "type": "string",
@@ -1275,7 +1283,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0.0",
-	Host:             "http://localhost:8090",
+	Host:             "https://carveo.site",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Carevo Car Management API Documentation",

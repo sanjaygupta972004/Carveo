@@ -70,6 +70,9 @@ definitions:
       updatedAt:
         example: "2025-01-01T12:00:00Z"
         type: string
+      userID:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
       year:
         example: "2022"
         type: string
@@ -165,6 +168,9 @@ definitions:
             type: number
           updatedAt:
             example: "2025-01-01T12:00:00Z"
+            type: string
+          userID:
+            example: f47ac10b-58cc-4372-a567-0e02b2c3d479
             type: string
           year:
             example: "2022"
@@ -322,10 +328,10 @@ definitions:
       userID:
         type: string
     type: object
-host: http://localhost:8090
+host: https://carveo.site
 info:
   contact:
-    email: sanjaygupta07054@gmailcom
+    email: sanjaygupta7212@gmailcom
     name: Support Team
     url: https://carveo.com/support
   description: API documentation for Carevo, a car management system for tracking,

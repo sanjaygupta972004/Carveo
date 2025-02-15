@@ -12,7 +12,6 @@ jobs:
       run: |
         sudo chown -R ubuntu:ubuntu /home/ubuntu/actions-runner/_work/Carveo/Carveo/ || true
         sudo chmod -R 755 /home/ubuntu/actions-runner/_work/Carveo/Carveo/ || true
-        sudo rm -rf /home/ubuntu/actions-runner/_work/Carveo/Carveo/* || true
     
     - uses: actions/checkout@v4
     - name: Set up permissions after checkout

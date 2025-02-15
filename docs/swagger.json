@@ -7,11 +7,11 @@
         "contact": {
             "name": "Support Team",
             "url": "https://carveo.com/support",
-            "email": "sanjaygupta07054@gmailcom"
+            "email": "sanjaygupta7212@gmailcom"
         },
         "version": "1.0.0"
     },
-    "host": "http://localhost:8090",
+    "host": "https://carveo.site",
     "basePath": "/api/v1",
     "paths": {
         "/cars/createCar": {
@@ -897,6 +897,10 @@
                     "type": "string",
                     "example": "2025-01-01T12:00:00Z"
                 },
+                "userID": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                },
                 "year": {
                     "type": "string",
                     "example": "2022"
@@ -1029,6 +1033,10 @@
                         "updatedAt": {
                             "type": "string",
                             "example": "2025-01-01T12:00:00Z"
+                        },
+                        "userID": {
+                            "type": "string",
+                            "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
                         },
                         "year": {
                             "type": "string",
