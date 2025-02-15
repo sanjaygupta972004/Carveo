@@ -3,6 +3,7 @@ name: Deploy Carveo
 on:
   push:
     branches: [ main ] 
+
 jobs:
   deploy:
     runs-on: self-hosted
@@ -14,6 +15,7 @@ jobs:
         sudo chmod -R 755 /home/ubuntu/actions-runner/_work/Carveo/Carveo/ || true
     
     - uses: actions/checkout@v4
+
     - name: Set up permissions after checkout
       run: |
         sudo chown -R ubuntu:ubuntu .
@@ -22,8 +24,8 @@ jobs:
     - name: Create env file 
       run: |
         mkdir -p env 
-        cat << EOF >  env/.env.prod
-         # Database Configuration
+        cat << EOF > env/.env.prod
+        # Database Configuration
         DB_USER=${{ secrets.DB_USER }}
         DB_HOST=${{ secrets.DB_HOST }}
         DB_PORT=${{ secrets.DB_PORT }}
@@ -52,7 +54,6 @@ jobs:
         sudo chmod 666 /var/run/docker.sock
         
     - name: Build and deploy
-      - name: Build and deploy
       run: |
         echo "Stopping containers while preserving volumes..."
         docker compose stop || echo "No running containers to stop."
