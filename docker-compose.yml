@@ -43,6 +43,14 @@ services:
     - ./nginx/certbot/conf/:/etc/letsencrypt/:rw
     depends_on:
     - webserver
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path /var/www/certbot; sleep 12h & wait $${!}; done;'"
+    command: >
+      certonly --webroot 
+      --webroot-path /var/www/certbot 
+      --email sanjaygupta7212@gmail.com
+      --agree-tos 
+      --no-eff-email
+      -d carveo.site 
+      -d www.carveo.site
+      --force-renewal
 
 
