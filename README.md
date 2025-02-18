@@ -4,6 +4,8 @@
 
 ## Features 🚀
 - **🔐 Secure Authentication:** JWT-based login & profile management.
+- **🔄 Refresh Token:** The application uses JWT-based authentication, allowing users to renew their access token with a refresh token without logging out.
+- **🔑 Reset Password:** Users can securely reset their passwords via email verification.
 - **🚗 Car Management:** Create, read, update, and delete cars with brand and ID search.
 - **🔧 Engine Management:** Full CRUD operations for engines.
 - **📊 Real-Time Monitoring:** Logs and analytics for system health.
@@ -14,17 +16,22 @@
 **Install:** Make sure you have Go, Docker, and the required Go packages (see code for details).
 # Clone the repository
 
-git clone <repository-url>
-cd Carveo
+```bash
+  git clone https://github.com/sanjaygupta972004/Carveo.git
+```
+
+Go to the project directory
+
+```bash
+  cd Carveo
+```
 
 # Run with Docker
-docker run -v ./cmd/env:/app/cmd/env -p 8090:8090 carveo
+docker compose up
 
 # Run Locally
 
 Clone the project
-
-
 
 ```bash
   git clone https://github.com/sanjaygupta972004/Carveo.git
@@ -38,12 +45,9 @@ Go to the project directory
 
 Install dependencies
 
-
   ```bash
   go mod download
   ```
-
-
 
 Start the server
 
