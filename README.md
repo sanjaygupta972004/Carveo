@@ -27,7 +27,9 @@ Go to the project directory
 ```
 
 # Run with Docker
+```bash
 docker compose up
+```
 
 # Run Locally
 
