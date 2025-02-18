@@ -32,6 +32,7 @@ type engineController struct {
 // @Description Create Engine for a Car by Car ID
 // @Tags Engine
 // @Accept json
+// @Security ApiKeyAuth
 // @Produce json
 // @Param carID path string true "Car ID"
 // @Param engine body models.EngineSwagger true "Engine Request"
@@ -61,6 +62,7 @@ func (ec *engineController) CreateEngine(c *gin.Context) {
 // @Summary Get Engine by ID
 // @Description Get Engine by Engine ID
 // @Tags Engine
+// @Security ApiKeyAuth
 // @Accept json
 // @Produce json
 // @Param engineID path string true "Engine ID"
@@ -85,6 +87,7 @@ func (ec *engineController) GetEngine(c *gin.Context) {
 // @Description Endpoint to get all engines
 // @Tags Engine
 // @Accept json
+// @Security ApiKeyAuth
 // @Produce json
 // @Success 200 {object} []models.SuccessResponseEngineSwagger "All engines retrieved successfully"
 // @Failure 500 {object} models.ErrorResponseEngineSwagger "Internal server error"
@@ -103,6 +106,7 @@ func (ec *engineController) GetEngines(c *gin.Context) {
 // @Tags Engine
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param engineID path string true "Engine ID"
 // @Param engine body models.EngineSwagger true "Engine Request"
 // @Success 200 {object} models.SuccessResponseEngineSwagger "Engine updated successfully"
@@ -133,6 +137,7 @@ func (ec *engineController) UpdateEngine(c *gin.Context) {
 // @Tags Engine
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param engineID path string true "Engine ID"
 // @Success 200 {string} string "Engine deleted successfully"
 // @Failure 500 {object} models.ErrorResponseEngineSwagger "Internal server error"

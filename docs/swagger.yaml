@@ -375,6 +375,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Create a new car
       tags:
       - Car
@@ -405,6 +407,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Delete a car
       tags:
       - Car
@@ -428,6 +432,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Get all cars
       tags:
       - Car
@@ -461,6 +467,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Get car by brand name and engine type
       tags:
       - Car
@@ -488,6 +496,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Get car by ID
       tags:
       - Car
@@ -524,6 +534,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseCarSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Update a car
       tags:
       - Car
@@ -559,6 +571,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Create Engine for a car
       tags:
       - Engine
@@ -584,6 +598,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Delete Engine
       tags:
       - Engine
@@ -605,6 +621,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Get All Engines
       tags:
       - Engine
@@ -630,6 +648,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Get Engine by ID
       tags:
       - Engine
@@ -665,6 +685,8 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseEngineSwagger'
+      security:
+      - ApiKeyAuth: []
       summary: Update Engine
       tags:
       - Engine
@@ -931,6 +953,17 @@ paths:
       - User
   /userAuth/validateResetPasswordToken:
     get:
+      consumes:
+      - application/json
+      description: Validate Reset Password Token
+      parameters:
+      - description: Token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
       responses:
         "200":
           description: Reset password token verified successfully
@@ -944,6 +977,9 @@ paths:
           description: Internal server error
           schema:
             $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Validate Reset Password Token
+      tags:
+      - User
   /userAuth/verifyEmail:
     get:
       consumes:

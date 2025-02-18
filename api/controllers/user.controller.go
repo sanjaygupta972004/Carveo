@@ -69,8 +69,7 @@ func (u *userController) GenerateResetPasswordToken(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
-// @Param token body string true "token"
-
+// @Param token query string true "Token"
 // @Success 200 {string} string "Reset password token verified successfully"
 // @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"

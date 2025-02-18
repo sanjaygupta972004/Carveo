@@ -22,6 +22,11 @@ const docTemplate = `{
     "paths": {
         "/cars/createCar": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create a new car with the input payload. This endpoint allows you to add a car to the database.",
                 "consumes": [
                     "application/json"
@@ -68,6 +73,11 @@ const docTemplate = `{
         },
         "/cars/deleteCar/{carID}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete a car with the input payload. This endpoint allows you to delete a car in the database.",
                 "consumes": [
                     "application/json"
@@ -112,6 +122,11 @@ const docTemplate = `{
         },
         "/cars/getAllCars": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve all cars from the database",
                 "produces": [
                     "application/json"
@@ -147,6 +162,11 @@ const docTemplate = `{
         },
         "/cars/getCarByBrand/{brandName}/{isEngine}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve car by brand name and engine type from the database",
                 "produces": [
                     "application/json"
@@ -195,6 +215,11 @@ const docTemplate = `{
         },
         "/cars/getCarByID/{carID}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve car by ID from the database",
                 "produces": [
                     "application/json"
@@ -236,6 +261,11 @@ const docTemplate = `{
         },
         "/cars/updateCar/{carID}": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update a car with the input payload. This endpoint allows you to update a car in the database.",
                 "consumes": [
                     "application/json"
@@ -289,6 +319,11 @@ const docTemplate = `{
         },
         "/engiens/createEngine{carID}/": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Create Engine for a Car by Car ID",
                 "consumes": [
                     "application/json"
@@ -342,6 +377,11 @@ const docTemplate = `{
         },
         "/engines/deleteEngine/{engineID}": {
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete Engine by Engine ID",
                 "consumes": [
                     "application/json"
@@ -380,6 +420,11 @@ const docTemplate = `{
         },
         "/engines/getAllEngines": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Endpoint to get all engines",
                 "consumes": [
                     "application/json"
@@ -412,6 +457,11 @@ const docTemplate = `{
         },
         "/engines/getEngineByID/{engineID}": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get Engine by Engine ID",
                 "consumes": [
                     "application/json"
@@ -450,6 +500,11 @@ const docTemplate = `{
         },
         "/engines/updateEngine/{engineID}": {
             "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update Engine by Engine ID",
                 "consumes": [
                     "application/json"
@@ -906,6 +961,26 @@ const docTemplate = `{
         },
         "/userAuth/validateResetPasswordToken": {
             "get": {
+                "description": "Validate Reset Password Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Validate Reset Password Token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Reset password token verified successfully",

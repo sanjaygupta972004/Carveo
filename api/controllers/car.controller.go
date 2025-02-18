@@ -39,6 +39,7 @@ type CarParameter struct {
 // @Tags Car
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param car body models.CarSwagger true "Car Request"
 // @Success 201 {object} models.SuccessResponseCarSwagger "Car created successfully"
 // @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
@@ -68,6 +69,7 @@ func (cc *carController) CreateCar(ctx *gin.Context) {
 // @Description Retrieve all cars from the database
 // @Tags Car
 // @Produce json
+// @Security ApiKeyAuth
 // @Success 200 {object} []models.SuccessResponseCarSwagger "All cars retrieved successfully"
 // @Failure 404 {object} models.ErrorResponseCarSwagger "No cars found"
 // @Failure 500 {object} models.ErrorResponseCarSwagger  "Internal server error"
@@ -86,6 +88,7 @@ func (cc *carController) GetAllCars(ctx *gin.Context) {
 // @Description Retrieve car by brand name and engine type from the database
 // @Tags Car
 // @Produce json
+// @Security ApiKeyAuth
 // @Param brandName path string true "Brand name of the car to retrieve"
 // @Param isEngine path boolean true "Engine type of the car"
 // @Success 200 {object} models.CarResponseByGetByBrandIsEngine "Car retrieved successfully by brand name and engine type"
@@ -114,6 +117,7 @@ func (cc *carController) GetCarByBrand(ctx *gin.Context) {
 // @Summary Get car by ID
 // @Description Retrieve car by ID from the database
 // @Tags Car
+// @Security ApiKeyAuth
 // @Produce json
 // @Param carID path string true "ID of the car to retrieve"
 // @Success 200 {object} models.CarResponseByGetByID "Car retrieved successfully by ID"
@@ -145,6 +149,7 @@ func (cc *carController) GetCarByID(ctx *gin.Context) {
 // @Tags Car
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param carID path string true "ID of the car to update"
 // @Param car body models.CarSwagger true "Car Request"
 // @Success 200 {object} models.SuccessResponseCarSwagger "Car updated successfully"
@@ -179,6 +184,7 @@ func (cc *carController) UpdateCar(ctx *gin.Context) {
 // @Tags Car
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param carID path string true "ID of the car to delete"
 // @Success 200 {string} string "Car deleted successfully"
 // @Failure 400 {object} models.ErrorResponseCarSwagger "Invalid input fields or JSON format"
