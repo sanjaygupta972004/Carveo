@@ -11,6 +11,24 @@
 - **📊 Real-Time Monitoring:** Logs and analytics for system health.
 - **⚡ Lightning Fast:** Optimized performance with Go & Gin.
 
+
+# 📖 API Documentation
+Access interactive API docs: [Swagger UI](https://carveo.site/swagger/index.html)
+
+
+# 🌍 Deployment
+## AWS + Docker Compose + Nginx + SSL 🔒
+
+- ☁️ **Cloud Hosted:** Deployed on AWS for scalability & reliability.
+- 🐳 **Dockerized:** Multi-container setup for seamless management.
+- ⚡ **Reverse Proxy:** Nginx ensures smooth request handling & load balancing.
+- 🔒 **HTTPS Security:** Certbot-managed SSL for encrypted connections.
+
+
+## Access the API 🌐
+[**Carveo API Live**](https://carveo.site/health)
+
+
 ## Quick Start 🏁
 
 **Install:** Make sure you have Go, Docker, and the required Go packages (see code for details).
@@ -56,19 +74,4 @@ Start the server
   go run main.go
 ```
 
-# 📖 API Documentation
-
-Access interactive API docs: [Swagger UI](https://carveo.site/swagger/index.html)
-
-# 🌍 Deployment
-
-## AWS + Docker Compose + Nginx + SSL 🔒
-
-- ☁️ **Cloud Hosted:** Deployed on AWS for scalability & reliability.
-- 🐳 **Dockerized:** Multi-container setup for seamless management.
-- ⚡ **Reverse Proxy:** Nginx ensures smooth request handling & load balancing.
-- 🔒 **HTTPS Security:** Certbot-managed SSL for encrypted connections.
-
-## Access the API 🌐
-[**Carveo API Live**](https://carveo.site/health)
 
