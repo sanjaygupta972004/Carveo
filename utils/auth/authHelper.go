@@ -29,13 +29,13 @@ func SignJWTForUser(user *models.User) (string, error) {
 	return signedToken, nil
 }
 
-func SignJWTAccessTokenForTravelAgency(user *models.User) (string, error) {
+func SignJWTRefreashTokenForUser(user *models.User) (string, error) {
 
 	claims := jwt.MapClaims{
 		"id":    user.UserID,
 		"email": user.Email,
 		"iss":   "oauth-app-golang",
-		"exp":   time.Now().Add(time.Hour * 24 * 2).Unix(),
+		"exp":   time.Now().Add(time.Hour * 24 * 7).Unix(),
 	}
 	secretKey := config.GetConfig().JwtSecret
 

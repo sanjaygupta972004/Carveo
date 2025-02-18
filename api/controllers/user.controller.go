@@ -7,8 +7,12 @@ import (
 	"carveo/utils"
 	"carveo/utils/auth"
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strings"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 type UserController interface {
@@ -18,6 +22,8 @@ type UserController interface {
 	UpdateUserProfile(c *gin.Context)
 	DeleteUserProfile(c *gin.Context)
 	VerifyEmail(c *gin.Context)
+
+	RegenerateAccessAndRefreshToken(c *gin.Context)
 }
 type userController struct {
 	userService services.UserService
@@ -127,6 +133,78 @@ func (u *userController) LoginUser(c *gin.Context) {
 	}
 
 	utils.SuccessResponse(c, http.StatusOK, "User logged in successfully", user)
+}
+
+// @Summary Regenerate Access and Refresh Token
+// @Description Regenerate Access and Refresh Token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param token query string true "Token"
+// @Success 200 utils.AceesTokenAndRefreshToken  "Access and Refresh Token regenerated successfully"
+// @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
+// @Router /userAuth/regenerateToken [get]
+func (u *userController) RegenerateAccessAndRefreshToken(c *gin.Context) {
+	var token string
+	if cookieToken, err := c.Cookie("refresh_token"); err == nil {
+		token = cookieToken
+	}
+
+	if token == "" {
+		authHeader := c.GetHeader("Authorization")
+		if authHeader != "" {
+			token = strings.TrimPrefix(strings.TrimSpace(authHeader), "Bearer ")
+		}
+	}
+
+	if token == "" {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Token not provided in Authorization header or cookie", nil)
+		return
+	}
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(config.GetConfig().JwtSecret), nil
+	})
+
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized access", nil)
+		return
+	}
+
+	log.Println("Claims:", claims)
+
+	userID, ok := claims["id"].(string)
+
+	if !ok {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "Invalid token: missing or invalid id", nil)
+		return
+	}
+	userEmail, ok := claims["email"].(string)
+	if !ok {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "Invalid token: missing or invalid email", nil)
+		return
+	}
+
+	user, tokens, err := u.userService.RegenerateAccessAndRefreshToken(token)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Internal server error", err.Error())
+		return
+	}
+
+	if user.Email != userID && user.Email != userEmail {
+		utils.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized access", nil)
+		return
+	}
+
+	if tokens.AccessToken != "" {
+		c.SetCookie("access_token", tokens.AccessToken, 60*60*24*2, "/", "", false, true)
+		c.SetCookie("refresh_token", tokens.RefreshToken, 60*60*24*7, "/", "", false, true)
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "Access and Refresh Token regenerated successfully", tokens)
+
 }
 
 // @Summary Get User Profile

@@ -27,9 +27,34 @@ type UserLoginData struct {
 	UpdatedAt        string
 }
 
+func regenerateAccessAndRefreshToken(user models.User) (utils.AceesTokenAndRefreshToken, error) {
+	// Code to regenerate access and refresh token
+	if user.RefreshToken == "" {
+		return utils.AceesTokenAndRefreshToken{}, fmt.Errorf("refresh token should be empty to generate new tokens")
+	}
+
+	// generate access token and refresh token
+	signedAccessToken, err := auth.SignJWTForUser(&user)
+	if err != nil {
+		return utils.AceesTokenAndRefreshToken{}, err
+	}
+
+	signedRefreshToken, err := auth.SignJWTRefreashTokenForUser(&user)
+	if err != nil {
+		return utils.AceesTokenAndRefreshToken{}, err
+	}
+
+	newToknes := utils.AceesTokenAndRefreshToken{
+		AccessToken:  signedAccessToken,
+		RefreshToken: signedRefreshToken,
+	}
+	return newToknes, nil
+}
+
 type UserService interface {
 	RegisterUser(user models.User) (models.User, error)
 	VarifyEmail(email string) error
+	RegenerateAccessAndRefreshToken(refreshToken string) (models.User, utils.AceesTokenAndRefreshToken, error)
 	LoginUser(email, password string) (UserLoginData, error)
 	GetUserProfile(id string) (models.User, error)
 	UpdateUserProfile(id string, user models.User) (models.User, error)
@@ -91,17 +116,37 @@ func (u *userService) VarifyEmail(email string) error {
 	return nil
 }
 
+func (u *userService) RegenerateAccessAndRefreshToken(accessToken string) (models.User, utils.AceesTokenAndRefreshToken, error) {
+	var user models.User
+	user, db, err := u.userRepository.RegenerateRefreshAccessToken(accessToken)
+	if err != nil {
+		return models.User{}, utils.AceesTokenAndRefreshToken{}, err
+	}
+
+	tokens, err := regenerateAccessAndRefreshToken(user)
+	if err != nil {
+		return models.User{}, utils.AceesTokenAndRefreshToken{}, err
+	}
+
+	// update refresh token in databases
+	if err := db.Model(&user).Where("id = ?", user.UserID).Update("refresh_token", tokens.RefreshToken).Error; err != nil {
+		return models.User{}, utils.AceesTokenAndRefreshToken{}, err
+	}
+
+	return user, tokens, nil
+}
+
 func (u *userService) LoginUser(email string, password string) (UserLoginData, error) {
-	user, err := u.userRepository.LoginUser(email)
+	user, db, err := u.userRepository.LoginUser(email)
 	if err != nil {
 		return UserLoginData{}, err
 	}
-	// generate jwt token and set in cookie
-	signedRefreshToken, err := auth.SignJWTForUser(&user)
+	// generate access token and refresh token
+	signedAccessToken, err := auth.SignJWTForUser(&user)
 	if err != nil {
 		return UserLoginData{}, err
 	}
-	signedAccessToken, err := auth.SignJWTAccessTokenForTravelAgency(&user)
+	signedRefreshToken, err := auth.SignJWTRefreashTokenForUser(&user)
 	if err != nil {
 		return UserLoginData{}, err
 	}
@@ -117,6 +162,11 @@ func (u *userService) LoginUser(email string, password string) (UserLoginData, e
 		IsEmailVarified:  user.IsEmailVerified,
 		CreatedAt:        user.CreatedAt.String(),
 		UpdatedAt:        user.UpdatedAt.String(),
+	}
+	// update access token and database
+	if err := db.Model(&user).Where("email = ?", user.Email).Update(
+		"refresh_token", signedRefreshToken).Error; err != nil {
+		return UserLoginData{}, err
 	}
 	return userData, nil
 }

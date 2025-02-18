@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"carveo/models"
-
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 )
@@ -10,7 +9,9 @@ import (
 type UserRepository interface {
 	CreateUser(user models.User) (models.User, error)
 	VarifyEmail(email string) error
-	LoginUser(email string) (models.User, error)
+	RegenerateRefreshAccessToken(accessToken string) (models.User, *gorm.DB, error)
+
+	LoginUser(email string) (models.User, *gorm.DB, error)
 	GetUserByID(id uuid.UUID) (models.User, error)
 	UpdateUser(id uuid.UUID, user models.User) (models.User, error)
 	DeleteUser(id uuid.UUID) (string, error)
@@ -51,13 +52,27 @@ func (u *userRepository) VarifyEmail(email string) error {
 	return nil
 }
 
-func (u *userRepository) LoginUser(email string) (models.User, error) {
+func (u *userRepository) LoginUser(email string) (models.User, *gorm.DB, error) {
 	var user models.User
 	err := u.db.Where("email = ?", email).First(&user).Error
 	if err != nil {
-		return models.User{}, err
+		return models.User{}, u.db, err
 	}
-	return user, nil
+	return user, u.db, nil
+}
+
+func (u *userRepository) RegenerateRefreshAccessToken(refreshToken string) (models.User, *gorm.DB, error) {
+	var user models.User
+	err := u.db.Where("access_token = ?", refreshToken).First(&user).Error
+	if err != nil {
+		return models.User{}, u.db, err
+	}
+	if user.RefreshToken == refreshToken {
+		if err := u.db.Model(&user).Where("refresh_token = ?", refreshToken).Update("refresh_token", "").Error; err != nil {
+			return models.User{}, u.db, err
+		}
+	}
+	return user, u.db, nil
 }
 
 func (u *userRepository) GetUserByID(id uuid.UUID) (models.User, error) {

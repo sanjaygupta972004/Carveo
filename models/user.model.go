@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"carveo/utils"
+
 	"github.com/gofrs/uuid"
 	"gorm.io/gorm"
 )
@@ -21,6 +22,7 @@ type User struct {
 	IsMobileVerified   bool           `gorm:"default:false" json:"isMobileVerified"`
 	AuthToken          string         `gorm:"default:null" json:"authToken"`
 	ResetPasswordToken string         `gorm:"default:null" json:"resetPasswordToken"`
+	RefreshToken       string         `gorm:"default:null" json:"refreshToken"`
 	IsAdmin            bool           `gorm:"default:false" json:"isAdmin"`
 	MobileNumber       string         `gorm:"default:null" json:"mobileNumber"`
 	CreatedAt          time.Time      `gorm:"autoCreateTime" json:"createdAt"`
