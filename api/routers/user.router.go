@@ -21,6 +21,10 @@ func SetupUserRoutes(rg *gin.RouterGroup, db *gorm.DB) {
 
 	rg.POST("/register", userController.RegisterUser)
 	rg.GET("/verifyEmail", userController.VerifyEmail)
+	rg.GET("/regenerateAccessAndRefreshToken", userController.RegenerateAccessAndRefreshToken)
+	rg.POST("/generateResetPasswordToken", userController.GenerateResetPasswordToken)
+	rg.GET("/validateResetPasswordToken", userController.ValidateResetPasswordToken)
+	rg.PATCH("/resetPassword", userController.UpdatePassword)
 	rg.POST("/login", userController.LoginUser)
 	rg.GET("/getUserProfile", authMiddleware, userController.GetUserProfile)
 	rg.PATCH("/updateUserProfile", authMiddleware, userController.UpdateUserProfile)

@@ -328,6 +328,13 @@ definitions:
       userID:
         type: string
     type: object
+  utils.AceesTokenAndRefreshToken:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
 host: https://carveo.site
 info:
   contact:
@@ -759,6 +766,35 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponseUserSwagger'
       summary: Login User
+      tags:
+      - User
+  /userAuth/regenerateAccessAndRefreshToken:
+    get:
+      consumes:
+      - application/json
+      description: Regenerate Access and Refresh Token
+      parameters:
+      - description: Token
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Access and Refresh Token regenerated successfully
+          schema:
+            $ref: '#/definitions/utils.AceesTokenAndRefreshToken'
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Regenerate Access and Refresh Token
       tags:
       - User
   /userAuth/register:

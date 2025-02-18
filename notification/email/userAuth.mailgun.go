@@ -1,4 +1,4 @@
-package email
+package notification
 
 import (
 	"carveo/config"
@@ -59,7 +59,7 @@ func (mg *mailgunService) SendResetPasswordEmail(to string, token string, userna
 	data = &utils.EmailDataType{
 		SiteName:         "Carveo",
 		Username:         username,
-		VerificationLink: fmt.Sprintf("%s/api/userAuth/resetPassword?token=%s", verificationBaseUrl, token),
+		VerificationLink: fmt.Sprintf("%s/api/userAuth/validateResetPasswordToken?token=%s", verificationBaseUrl, token),
 	}
 
 	body := utils.GenerateEmailContentForResetPassword(*data)
@@ -73,5 +73,25 @@ func (mg *mailgunService) SendResetPasswordEmail(to string, token string, userna
 
 	_, _, err := mgClient.Send(ctx, message)
 	return err
+}
 
+func (mg *mailgunService) SendWelcomeEmail(to string, userName string) error {
+	mgClient := mailgun.NewMailgun(mg.mailGunConfig.Domain, mg.mailGunConfig.PrivateAPIKey)
+
+	data := &utils.WelcomeEmailDataType{
+		SiteName: "Carveo",
+		Username: to,
+	}
+
+	body := utils.WelcomeEmailTemplate(*data)
+	subject := "Welcome to Carveo"
+	message := mgClient.NewMessage(mg.mailGunConfig.SenderEmail, subject, body, to)
+
+	message.SetHtml(body)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	_, _, err := mgClient.Send(ctx, message)
+	return err
 }

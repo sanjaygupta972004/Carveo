@@ -18,6 +18,9 @@ import (
 type UserController interface {
 	RegisterUser(c *gin.Context)
 	LoginUser(c *gin.Context)
+	GenerateResetPasswordToken(c *gin.Context)
+	ValidateResetPasswordToken(c *gin.Context)
+	UpdatePassword(c *gin.Context)
 	GetUserProfile(c *gin.Context)
 	UpdateUserProfile(c *gin.Context)
 	DeleteUserProfile(c *gin.Context)
@@ -33,6 +36,86 @@ func NewUserController(userService services.UserService) UserController {
 	return &userController{
 		userService: userService,
 	}
+}
+
+// @Summary Generate Reset Password Token
+// @Description Generate Reset Password Token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param email body string true "Email"
+// @Success 200 {string} string "Reset password token generated successfully"
+// @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
+// @Router /userAuth/generateResetPasswordToken [post]
+func (u *userController) GenerateResetPasswordToken(c *gin.Context) {
+	var reqData struct {
+		Email string `json:"email" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&reqData); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid request data", err.Error())
+		return
+	}
+	msg, err := u.userService.GenerateResetPasswordToken(reqData.Email)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Internal server error", err.Error())
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "Reset password token generated successfully", msg)
+}
+
+// @Summary Validate Reset Password Token
+// @Description Validate Reset Password Token
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param token body string true "token"
+
+// @Success 200 {string} string "Reset password token verified successfully"
+// @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
+// @Router /userAuth/validateResetPasswordToken [get]
+func (u *userController) ValidateResetPasswordToken(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Token is required for reset password verification", nil)
+		return
+	}
+	msg, err := u.userService.ValidateResetPasswordToken(token)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Internal server error", err.Error())
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "Reset password token verified successfully", msg)
+
+}
+
+// @Summary Update Password
+// @Description Update Password
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param password body string true "Password"
+// @Param email body string true "Email"
+// @Success 200 {string} string "Password updated successfully"
+// @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
+// @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
+// @Router /userAuth/updatePassword [patch]
+func (u *userController) UpdatePassword(c *gin.Context) {
+	var reqData struct {
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&reqData); err != nil {
+		utils.ErrorResponse(c, http.StatusBadRequest, "Invalid request data", err.Error())
+		return
+	}
+	msg, err := u.userService.UpdatePassword(reqData.Email, reqData.Password)
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Internal server error", err.Error())
+		return
+	}
+	utils.SuccessResponse(c, http.StatusOK, "Password updated successfully", msg)
 }
 
 // @Summary Register a new user
@@ -141,10 +224,10 @@ func (u *userController) LoginUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param token query string true "Token"
-// @Success 200 utils.AceesTokenAndRefreshToken  "Access and Refresh Token regenerated successfully"
+// @Success 200 {object} utils.AceesTokenAndRefreshToken  "Access and Refresh Token regenerated successfully"
 // @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
 // @Failure 500 {object} models.ErrorResponseUserSwagger "Internal server error"
-// @Router /userAuth/regenerateToken [get]
+// @Router /userAuth/regenerateAccessAndRefreshToken [get]
 func (u *userController) RegenerateAccessAndRefreshToken(c *gin.Context) {
 	var token string
 	if cookieToken, err := c.Cookie("refresh_token"); err == nil {

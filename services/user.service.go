@@ -3,10 +3,12 @@ package services
 import (
 	"carveo/config"
 	"carveo/models"
-	"carveo/notification/email"
+	notification "carveo/notification/email"
+
 	"carveo/repositories"
 	"carveo/utils"
 	"carveo/utils/auth"
+
 	"fmt"
 	"os"
 
@@ -54,6 +56,9 @@ func regenerateAccessAndRefreshToken(user models.User) (utils.AceesTokenAndRefre
 type UserService interface {
 	RegisterUser(user models.User) (models.User, error)
 	VarifyEmail(email string) error
+	GenerateResetPasswordToken(email string) (string, error)
+	ValidateResetPasswordToken(email string) (string, error)
+	UpdatePassword(email, newPassword string) (string, error)
 	RegenerateAccessAndRefreshToken(refreshToken string) (models.User, utils.AceesTokenAndRefreshToken, error)
 	LoginUser(email, password string) (UserLoginData, error)
 	GetUserProfile(id string) (models.User, error)
@@ -100,7 +105,7 @@ func (u *userService) RegisterUser(user models.User) (models.User, error) {
 		return models.User{}, err
 	}
 
-	mailgun := email.NewMailgunService()
+	mailgun := notification.NewMailgunService()
 	err = mailgun.SendVerificationEmail(userData.Email, emailVerificationToken, userData.FullName, baseUrl)
 	if err != nil {
 		return models.User{}, err
@@ -114,6 +119,66 @@ func (u *userService) VarifyEmail(email string) error {
 		return err
 	}
 	return nil
+}
+
+func (u *userService) GenerateResetPasswordToken(email string) (string, error) {
+	jwtSecret := config.GetConfig().JwtSecret
+	if jwtSecret == "" {
+		return "", fmt.Errorf("JWT_SECRET_KEY environment variable not set")
+	}
+	// generate reset password token
+	resetPasswordToken, err := auth.GenerateEmailVerificationToken(email, jwtSecret)
+	if err != nil {
+		return "", err
+	}
+	user, err := u.userRepository.GenerateResetPasswordToken(email, resetPasswordToken)
+	if err != nil {
+		return "", err
+	}
+
+	// send email to user
+	baseUrl := os.Getenv("SERVER_BASE_URL")
+	if baseUrl == "" {
+		return "", fmt.Errorf("SERVER_BASE_URL environment variable not set")
+	}
+
+	mailgun := notification.NewMailgunService()
+	err = mailgun.SendResetPasswordEmail(user.Email, resetPasswordToken, user.FullName, baseUrl)
+	if err != nil {
+		return "", err
+	}
+
+	return "Reset Password Token is successfully sent", nil
+}
+
+func (u *userService) ValidateResetPasswordToken(resetPasswordToken string) (string, error) {
+	jwtSecret := config.GetConfig().JwtSecret
+	if jwtSecret == "" {
+		return "", fmt.Errorf("JWT_SECRET_KEY environment variable not set")
+	}
+	// validate reset password token
+	email, err := auth.VerifyEmailVerificationToken(resetPasswordToken, jwtSecret)
+	if err != nil {
+		return "", err
+	}
+	res, err := u.userRepository.ValidateResetPasswordToken(email, resetPasswordToken)
+	if err != nil {
+		return "", err
+	}
+	return res, nil
+
+}
+
+func (u *userService) UpdatePassword(email, newPassword string) (string, error) {
+	hashedPassword, err := utils.HashPassword(newPassword)
+	if err != nil {
+		return "", err
+	}
+	res, err := u.userRepository.UpdatePassword(email, hashedPassword)
+	if err != nil {
+		return "", err
+	}
+	return res, nil
 }
 
 func (u *userService) RegenerateAccessAndRefreshToken(accessToken string) (models.User, utils.AceesTokenAndRefreshToken, error) {
@@ -168,6 +233,15 @@ func (u *userService) LoginUser(email string, password string) (UserLoginData, e
 		"refresh_token", signedRefreshToken).Error; err != nil {
 		return UserLoginData{}, err
 	}
+
+	// send welcome email to user
+
+	mailgun := notification.NewMailgunService()
+	err = mailgun.SendWelcomeEmail(user.Email, user.FullName)
+	if err != nil {
+		return UserLoginData{}, err
+	}
+
 	return userData, nil
 }
 

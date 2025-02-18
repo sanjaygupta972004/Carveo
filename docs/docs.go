@@ -656,6 +656,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/userAuth/regenerateAccessAndRefreshToken": {
+            "get": {
+                "description": "Regenerate Access and Refresh Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Regenerate Access and Refresh Token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Token",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Access and Refresh Token regenerated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/utils.AceesTokenAndRefreshToken"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
         "/userAuth/register": {
             "post": {
                 "description": "Register a new user",
@@ -1259,6 +1303,17 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "userID": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.AceesTokenAndRefreshToken": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
                     "type": "string"
                 }
             }

@@ -10,6 +10,9 @@ type UserRepository interface {
 	CreateUser(user models.User) (models.User, error)
 	VarifyEmail(email string) error
 	RegenerateRefreshAccessToken(accessToken string) (models.User, *gorm.DB, error)
+	GenerateResetPasswordToken(email string, resetPasswordToken string) (models.User, error)
+	ValidateResetPasswordToken(email, resetPasswordToken string) (string, error)
+	UpdatePassword(email string, newPassword string) (string, error)
 
 	LoginUser(email string) (models.User, *gorm.DB, error)
 	GetUserByID(id uuid.UUID) (models.User, error)
@@ -25,6 +28,55 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{
 		db: db,
 	}
+}
+
+func (u *userRepository) UpdatePassword(email string, newPassword string) (string, error) {
+	var user models.User
+	err := u.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return "", err
+	}
+	if user.Email == email && user.PassWord != newPassword && newPassword != "" && user.ResetPasswordToken == "" {
+		if err := u.db.Model(&user).Where("email = ?", email).Updates(map[string]interface{}{
+			"password": newPassword,
+		}).Error; err != nil {
+			return "", err
+		}
+	}
+
+	return "Password is successfully updated", nil
+}
+
+func (u *userRepository) ValidateResetPasswordToken(email, resetPasswordToken string) (string, error) {
+	var user models.User
+	err := u.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return "", err
+	}
+	if user.ResetPasswordToken == resetPasswordToken {
+		if err := u.db.Model(&user).Where("email = ?", email).Updates(map[string]interface{}{
+			"reset_password_token": "",
+		}).Error; err != nil {
+			return "", err
+		}
+	}
+	return "Reset password Token is successfully verified", nil
+}
+
+func (u *userRepository) GenerateResetPasswordToken(email string, resetPasswordToken string) (models.User, error) {
+	var user models.User
+	err := u.db.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return models.User{}, err
+	}
+	if user.Email == email && user.ResetPasswordToken == "" {
+		if err := u.db.Model(&user).Where("email = ?", email).Updates(map[string]interface{}{
+			"reset_password_token": resetPasswordToken,
+		}).Error; err != nil {
+			return models.User{}, err
+		}
+	}
+	return user, nil
 }
 
 func (u *userRepository) CreateUser(user models.User) (models.User, error) {
