@@ -14,19 +14,18 @@
 ## Quick Start 🏁
 
 **Install:** Make sure you have Go, Docker, and the required Go packages (see code for details).
-# Clone the repository
+# Run with Docker
 
+# Clone the repository
 ```bash
   git clone https://github.com/sanjaygupta972004/Carveo.git
 ```
 
 Go to the project directory
-
 ```bash
   cd Carveo
 ```
 
-# Run with Docker
 ```bash
 docker compose up
 ```
