@@ -707,6 +707,36 @@ paths:
       summary: Delete User Profile
       tags:
       - User
+  /userAuth/generateResetPasswordToken:
+    post:
+      consumes:
+      - application/json
+      description: Generate Reset Password Token
+      parameters:
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Reset password token generated successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Generate Reset Password Token
+      tags:
+      - User
   /userAuth/getUserProfile:
     get:
       consumes:
@@ -827,6 +857,42 @@ paths:
       summary: Register a new user
       tags:
       - User
+  /userAuth/updatePassword:
+    patch:
+      consumes:
+      - application/json
+      description: Update Password
+      parameters:
+      - description: Password
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: Email
+        in: body
+        name: email
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password updated successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+      summary: Update Password
+      tags:
+      - User
   /userAuth/updateUserProfile:
     patch:
       consumes:
@@ -863,6 +929,21 @@ paths:
       summary: Update User Profile
       tags:
       - User
+  /userAuth/validateResetPasswordToken:
+    get:
+      responses:
+        "200":
+          description: Reset password token verified successfully
+          schema:
+            type: string
+        "400":
+          description: Invalid input fields or JSON format
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/models.ErrorResponseUserSwagger'
   /userAuth/verifyEmail:
     get:
       consumes:

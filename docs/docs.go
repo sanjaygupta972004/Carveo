@@ -561,6 +561,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/userAuth/generateResetPasswordToken": {
+            "post": {
+                "description": "Generate Reset Password Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Generate Reset Password Token",
+                "parameters": [
+                    {
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reset password token generated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
         "/userAuth/getUserProfile": {
             "get": {
                 "security": [
@@ -746,6 +792,61 @@ const docTemplate = `{
                 }
             }
         },
+        "/userAuth/updatePassword": {
+            "patch": {
+                "description": "Update Password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update Password",
+                "parameters": [
+                    {
+                        "description": "Password",
+                        "name": "password",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Email",
+                        "name": "email",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password updated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
         "/userAuth/updateUserProfile": {
             "patch": {
                 "security": [
@@ -790,6 +891,30 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized User",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponseUserSwagger"
+                        }
+                    }
+                }
+            }
+        },
+        "/userAuth/validateResetPasswordToken": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "Reset password token verified successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input fields or JSON format",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponseUserSwagger"
                         }
