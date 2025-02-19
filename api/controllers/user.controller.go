@@ -222,6 +222,7 @@ func (u *userController) LoginUser(c *gin.Context) {
 // @Tags User
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
 // @Param token query string true "Token"
 // @Success 200 {object} utils.AceesTokenAndRefreshToken  "Access and Refresh Token regenerated successfully"
 // @Failure 400 {object} models.ErrorResponseUserSwagger "Invalid input fields or JSON format"
