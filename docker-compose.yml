@@ -44,6 +44,7 @@ services:
     volumes:
     - certbot-etc:/etc/letsencrypt
     - certbot-www:/var/www/certbot
+    - ./certbot_renew.sh:/certbot_renew.sh
     depends_on:
     - webserver
     command: sh -c "/app/certbot_renew.sh"
