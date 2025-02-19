@@ -44,13 +44,6 @@ services:
     depends_on:
     - webserver
     command: >
-      certonly --webroot 
-      --webroot-path /var/www/certbot 
-      --email sanjaygupta7212@gmail.com
-      --agree-tos 
-      --no-eff-email
-      -d carveo.site 
-      -d www.carveo.site
-      --force-renewal
+      sh -c "certbot renew --webroot --webroot-path /var/www/certbot && nginx -s reload"
 
 
