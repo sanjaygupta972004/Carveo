@@ -1,6 +1,9 @@
 networks:
   carveo_network:
     driver: bridge
+volumes:
+  certbot-etc:
+  certbot-www:    
 
 services:
   carveo:
@@ -27,9 +30,9 @@ services:
       - 443:443
     restart: always
     volumes:
-      - ./nginx/conf/:/etc/nginx/conf.d/:ro
-      - ./nginx/certbot/www:/var/www/certbot/:ro
-      - ./nginx/certbot/conf:/etc/letsencrypt/:rw 
+     - certbot-etc:/etc/letsencrypt
+     - certbot-www:/var/www/certbot
+     - ./nginx/certbot/conf:/etc/letsencrypt/:rw 
     deploy:
       mode: replicated
       replicas: 1
@@ -39,11 +42,11 @@ services:
   certbot:
     image: certbot/certbot:latest
     volumes:
-    - ./nginx/certbot/www/:/var/www/certbot/:rw
-    - ./nginx/certbot/conf/:/etc/letsencrypt/:rw
+    - certbot-etc:/etc/letsencrypt
+    - certbot-www:/var/www/certbot
     depends_on:
     - webserver
     command: >
-      sh -c "certbot renew --webroot --webroot-path /var/www/certbot && nginx -s reload"
+      sh -c "if [ ! -d '/etc/letsencrypt/live/carveo.site' ]; then certbot certonly --webroot -w /var/www/certbot --email sanjaygupta721r@gmail.com --agree-tos --no-eff-email --force-renewal -d carveo.site www.carveo.site; fi && nginx -s reload"
 
 
