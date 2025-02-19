@@ -22,7 +22,7 @@ services:
       replicas: 1
     networks:
       - carveo_network
-     
+      
   webserver:
     image: nginx:latest
     ports:
@@ -32,8 +32,8 @@ services:
     volumes:
      - certbot-etc:/etc/letsencrypt
      - certbot-www:/var/www/certbot
-     - ./nginx/conf/default.conf:/etc/nginx/conf.d/default.conf:ro  # Mount main nginx.conf
-     - ./nginx/conf:/etc/nginx/conf.d:ro  # Mount conf folder
+     - ./nginx/conf/default.conf:/etc/nginx/conf.d/default.conf:ro  
+     - ./nginx/conf:/etc/nginx/conf.d:ro 
     deploy:
       mode: replicated
       replicas: 1
@@ -46,8 +46,6 @@ services:
     - certbot-etc:/etc/letsencrypt
     - certbot-www:/var/www/certbot
     - ./certbot_renew.sh:/certbot_renew.sh
-    depends_on:
-    - webserver
     command: sh -c "/app/certbot_renew.sh"
 
 

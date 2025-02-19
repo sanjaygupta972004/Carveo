@@ -59,7 +59,7 @@ jobs:
         docker compose stop || echo "No running containers to stop."
         
         echo "Building and starting new containers..."
-        docker compose up --build -d --no-deps || { echo "❌ Deployment failed! Check logs."; exit 1; }
+        docker compose up --build -d || { echo "❌ Deployment failed! Check logs."; exit 1; }
         
         echo "Checking if services are running..."
         sleep 5  # Give some time for services to start
