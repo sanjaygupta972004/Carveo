@@ -71,7 +71,7 @@ Install dependencies
 Start the server
 
 ```bash
-  go run main.go
+  go run .
 ```
 
 
