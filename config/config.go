@@ -29,12 +29,17 @@ type Config struct {
 	Port          string
 	GinMode       string
 	MailgunConfig MailgunConfig
+	RedisConfig   RedisConfig
 }
 
 type MailgunConfig struct {
 	Domain        string
 	PrivateAPIKey string
 	SenderEmail   string
+}
+
+type RedisConfig struct {
+	RedisURL string
 }
 
 func LoadEnvFile(env string) error {
@@ -49,6 +54,18 @@ func loadENVForMailgun() (MailgunConfig, error) {
 		PrivateAPIKey: os.Getenv("MAILGUN_API_KEY"),
 		SenderEmail:   os.Getenv("MAILGUN_SENDER_EMAIL"),
 	}, nil
+}
+
+func loadENVRedis() (RedisConfig, error) {
+	redisConf := RedisConfig{
+		RedisURL: os.Getenv("REDIS_REST_URL"),
+	}
+
+	if redisConf.RedisURL == "" {
+		return RedisConfig{}, fmt.Errorf("Error while uploading Redis enviroment variables")
+	}
+
+	return redisConf, nil
 }
 
 func LoadConfig() error {
@@ -70,6 +87,12 @@ func LoadConfig() error {
 			return
 		}
 
+		redisConfig, err := loadENVRedis()
+		if err != nil {
+			loadErr = fmt.Errorf("failed to load redis config: %w", err)
+			return
+		}
+
 		mu.Lock()
 		defer mu.Unlock()
 
@@ -84,6 +107,7 @@ func LoadConfig() error {
 			Port:          os.Getenv("PORT"),
 			GinMode:       os.Getenv("GIN_MODE"),
 			MailgunConfig: mailgunConfig,
+			RedisConfig:   redisConfig,
 		}
 
 		// Validate required fields
