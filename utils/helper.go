@@ -23,7 +23,7 @@ func IsUUID(id string) (uuid.UUID, error) {
 	return idUUID, nil
 }
 
-func ErrorResponse(ctx *gin.Context, statusCode int, customMessage string, details interface{}) {
+func ErrorResponse(ctx *gin.Context, statusCode int, customMessage string, details any) {
 	if details != nil {
 		log.Printf("Error : %v", details)
 	}
@@ -36,7 +36,7 @@ func ErrorResponse(ctx *gin.Context, statusCode int, customMessage string, detai
 	})
 }
 
-func SuccessResponse(ctx *gin.Context, statusCode int, customMessage string, data interface{}) {
+func SuccessResponse(ctx *gin.Context, statusCode int, customMessage string, data any) {
 	ctx.JSON(statusCode, gin.H{
 		"success": true,
 		"message": customMessage,

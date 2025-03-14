@@ -102,9 +102,10 @@ func main() {
 	router := gin.New()
 
 	// Global Middleware
+	router.Use(middlewares.CorsMiddleWare())
 	router.Use(middlewares.RecoverMiddleware())
 	router.Use(middlewares.LoggerMiddleware())
-	router.Use(middlewares.CorsMiddleWare())
+	router.Use(middlewares.RateLimitMiddleware())
 
 	// Setup routers
 	routers.SetupRouter(router, dbInstance)

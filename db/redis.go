@@ -19,6 +19,8 @@ func ConnectRedisDB() error {
 	}
 
 	rdb := redis.NewClient(opt)
+	// assign redis client to global variable
+	RedisClient = redis.NewClient(opt)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
