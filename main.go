@@ -81,6 +81,14 @@ func main() {
 
 	dbInstance := db.DB
 
+	// connect redis db
+	if err := db.ConnectRedisDB(); err != nil {
+		logger.Error(err.Error(), logrus.Fields{
+			"detail": " Error while connecting redis database",
+		})
+		log.Fatal(err.Error())
+	}
+
 	// Migrate models
 	if err := migration.MigrateModels(dbInstance); err != nil {
 		logger.Error("Failed to migrate models:", logrus.Fields{
@@ -94,9 +102,10 @@ func main() {
 	router := gin.New()
 
 	// Global Middleware
+	router.Use(middlewares.CorsMiddleWare())
 	router.Use(middlewares.RecoverMiddleware())
 	router.Use(middlewares.LoggerMiddleware())
-	router.Use(middlewares.CorsMiddleWare())
+	router.Use(middlewares.RateLimitMiddleware())
 
 	// Setup routers
 	routers.SetupRouter(router, dbInstance)
