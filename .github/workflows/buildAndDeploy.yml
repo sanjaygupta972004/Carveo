@@ -32,6 +32,7 @@ jobs:
         DB_PASSWORD=${{ secrets.DB_PASSWORD }}
         DB_NAME=${{ secrets.DB_NAME }}
         DB_SSLMODE=${{ secrets.DB_SSLMODE }}
+        REDIS_REST_URL=${{secrets.REDIS_REST_URL}}
     
         # Auth Configuration
         JWT_SECRET=${{ secrets.JWT_SECRET }}
